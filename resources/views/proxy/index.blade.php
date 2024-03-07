@@ -75,9 +75,7 @@
             $outSection = array_filter($entities, function ($dto) {
                 return $dto->getSection() === 'out';
             });
-            $rulesSection = array_filter($entities, function ($dto) {
-                return $dto->getSection() === 'rules';
-            });
+            $rulesSection = $rules;
             // parse each section into special DTOs
 
         @endphp

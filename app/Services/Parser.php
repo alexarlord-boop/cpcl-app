@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use Symfony\Component\Yaml\Yaml;
 use App\Models\Entity;
 
@@ -33,6 +34,7 @@ class Parser
     {
         return $this->entities;
     }
+
     public function parseYamlFile($fileContent)
     {
         // Your YAML parsing logic here

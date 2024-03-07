@@ -57,12 +57,14 @@ class ProxyController extends Controller
             if ($fileToParse) {
                 $io = new IOUtils();
                 $fileContent = $io->readFile($fileToParse);
-                $entities = $this->getEntitiesFromYaml($fileContent);
+                $data = $this->getEntitiesFromYaml($fileContent);
+                $entities = $data['entities'];
+                $rules = $data['rules'];
                 // Parse YAML file
                 //$yamlContent = Yaml::parseFile($fileToParse);
                 $fileName = explode("/",$fileToParse)[1];
 //                return Redirect::route('proxy.index')->with('yamlContent', $yamlContent)->with('fileName', explode("/",$fileToParse)[1]);
-                return view('proxy.index', compact('entities', 'fileName'));
+                return view('proxy.index', compact('entities', 'rules','fileName'));
             }
         }
 
@@ -75,8 +77,9 @@ class ProxyController extends Controller
     {
         $parser = new Parser();
         $yamlData = $parser->parseYamlFile($fileContent);
+        $rules = $yamlData['rules'];
         $parser->extractEntities($yamlData);
-        return $parser->getEntities();
+        return array('entities'=>$parser->getEntities(), 'rules'=>$rules);
 //        return Entity::all();
     }
 

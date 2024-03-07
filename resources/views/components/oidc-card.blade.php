@@ -1,4 +1,4 @@
-<div class="card my-1">
+<div class="card my-2">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>{{$entity->getName()}}</h5>
 
@@ -9,12 +9,10 @@
 
     </div>
     <div class="card-body">
-        <div class="card-body">
-           <pre>
+           <p>
                 @php
                     print_r($entity);
                 @endphp
-            </pre>
-        </div>
+            </p>
     </div>
 </div>
