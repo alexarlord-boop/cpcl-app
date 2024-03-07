@@ -16,7 +16,7 @@
         <!-- ... Upload config from pc ... -->
         <form action="/" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="input-group input-group-sm mb-3">
+            <div class="input-group input-group mb-3">
                 <div class="input-group-prepend">
                     <button type="submit" class="input-group-append btn btn-outline-success">⬆upload</button>
                 </div>
@@ -31,7 +31,7 @@
         <!-- ... Get config from uploads ... -->
         <form action="/" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="input-group input-group-sm mb-3">
+            <div class="input-group input-group mb-3">
                 <select class="custom-select " name="uploadedFile" required>
                     <?php
 
@@ -63,7 +63,7 @@
     <!-- ... Config file content divided in sections ... -->
     @if(isset($entities))
         @if(isset($fileName))
-            <div>
+            <div class="mt-2">
                 <h5>File: <span class="text-secondary">{{$fileName}}</span></h5>
             </div>
         @endif
