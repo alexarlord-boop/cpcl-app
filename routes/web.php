@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DatabaseTestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,3 +20,4 @@ use App\Http\Controllers\ProxyController;
 
 Route::get('/', [ProxyController::class, 'index'])->name('proxy.index');
 Route::match(['post'], '/', [ProxyController::class, 'parseAndShow']);
+Route::get('/test-database-connection', [DatabaseTestController::class, 'testDatabaseConnection']);
