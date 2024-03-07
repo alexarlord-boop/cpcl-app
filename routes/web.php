@@ -20,4 +20,7 @@ use App\Http\Controllers\ProxyController;
 
 Route::get('/', [ProxyController::class, 'index'])->name('proxy.index');
 Route::match(['post'], '/', [ProxyController::class, 'parseAndShow']);
+Route::get('/test-basic', function () {
+    return 'Basic route works!';
+});
 Route::get('/test-database-connection', [DatabaseTestController::class, 'testDatabaseConnection']);
