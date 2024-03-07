@@ -9,10 +9,10 @@
 
     </div>
     <div class="card-body">
-            <p>
+            <pre>
                 @php
                     print_r($entity);
                 @endphp
-            </p>
+            </pre>
     </div>
 </div>
