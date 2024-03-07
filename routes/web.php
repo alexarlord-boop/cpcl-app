@@ -23,4 +23,4 @@ Route::match(['post'], '/', [ProxyController::class, 'parseAndShow']);
 Route::get('/test-basic', function () {
     return 'Basic route works!';
 });
-Route::get('/test-database-connection', [DatabaseTestController::class, 'testDatabaseConnection']);
+Route::get('/test-db', [DatabaseTestController::class, 'testDatabaseConnection']);
