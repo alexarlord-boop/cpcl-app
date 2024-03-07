@@ -18,4 +18,4 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProxyController;
 
 Route::get('/', [ProxyController::class, 'index'])->name('proxy.index');
-Route::post('/parse-and-show', [ProxyController::class, 'parseAndShow'])->name('proxy.parseAndShow');
+Route::match(['post'], '/', [ProxyController::class, 'parseAndShow']);

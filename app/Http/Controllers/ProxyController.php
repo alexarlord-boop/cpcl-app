@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Entity;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Services\Parser;
 use App\Services\IOUtils;
-use App\Enums\Section; // Import the Section enum
+use App\Enums\Section;
+use Illuminate\Support\Facades\Redirect;
+use Symfony\Component\Yaml\Yaml;
 
 class ProxyController extends Controller
 {
@@ -26,6 +30,7 @@ class ProxyController extends Controller
     {
         $fileToParse = null;
         $uploadDir = 'uploads/';
+        $yamlContent = null;
 
         if ($request->isMethod('post')) {
             $file = $request->file('file');
@@ -48,27 +53,31 @@ class ProxyController extends Controller
                 $_SESSION['uploaded_file'] = explode('/', $fileToParse)[1];
             }
 
+
             if ($fileToParse) {
                 $io = new IOUtils();
                 $fileContent = $io->readFile($fileToParse);
-                $this->parseAndShowHelper($fileContent);
+                $entities = $this->getEntitiesFromYaml($fileContent);
+                // Parse YAML file
+                //$yamlContent = Yaml::parseFile($fileToParse);
+                $fileName = explode("/",$fileToParse)[1];
+//                return Redirect::route('proxy.index')->with('yamlContent', $yamlContent)->with('fileName', explode("/",$fileToParse)[1]);
+                return view('proxy.index', compact('entities', 'fileName'));
             }
         }
 
         // ... Rest of your logic
-
-        return redirect()->route('proxy.index');
+//        return Redirect::route('proxy.index')->with('yamlContent', $yamlContent);
+        return view('proxy.index', compact($yamlContent));
     }
 
-    private function parseAndShowHelper($fileContent)
+    private function getEntitiesFromYaml($fileContent): array
     {
         $parser = new Parser();
-        $data = $parser->parseYamlFile($fileContent);
-        print_r($data);
-        $parser->extractEntities($data);
-        $entities = $parser->getEntities();
-
-        $_SESSION['parsed_entities'] = serialize($entities);
+        $yamlData = $parser->parseYamlFile($fileContent);
+        $parser->extractEntities($yamlData);
+        return $parser->getEntities();
+//        return Entity::all();
     }
 
     // ... Rest of your controller methods

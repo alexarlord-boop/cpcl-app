@@ -11,7 +11,7 @@ class EntityDTO implements EntityInterface
     private string $name;
     private string $description;
     private string $resource_location; // idp: metadata_url	op: discovery_url	rp: redirect_uri
-    private ?string $id; // idp, sp: entityID or rp: client_id | nullable
+    private ?string $entityid; // idp, sp: entityID or rp: client_id | nullable
     private ?string $dynamic_registration; // only in RP | nullable
     private ?string $client_secret; // only in RP | nullable
 
@@ -22,7 +22,7 @@ class EntityDTO implements EntityInterface
         string  $name,
         string  $description,
         string  $resource_location,
-        ?string $id = null,
+        ?string $entityid = null,
         ?string $dynamic_registration = null,
         ?string $client_secret = null
     )
@@ -33,7 +33,7 @@ class EntityDTO implements EntityInterface
         $this->name = $name;
         $this->description = $description;
         $this->resource_location = $resource_location;
-        $this->id = $id;
+        $this->entityid = $entityid;
         $this->dynamic_registration = $dynamic_registration;
         $this->client_secret = $client_secret;
     }
@@ -49,9 +49,9 @@ class EntityDTO implements EntityInterface
         return $this->description;
     }
 
-    public function getId(): ?string
+    public function getEntityId(): ?string
     {
-        return $this->id;
+        return $this->entityid;
     }
 
     public function getResourceLocation(): string

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 use Symfony\Component\Yaml\Yaml;
+use App\Models\Entity;
+
 
 class Parser
 {
@@ -37,19 +39,32 @@ class Parser
         return Yaml::parse($fileContent);
     }
 
-    public function extractEntities($data)
+    public function extractEntities($yamlData): void
     {
         // Your logic to extract entities from parsed data
         $entitiesTmp = array();
         foreach ($this->entityTypes as $entityType => [$direction, $entityProtocol]) {
             $entityData = $yamlData[$direction][$entityType] ?? null;
             if ($entityData) {
-                $entity = EntityFactory::createEntity($entityType, $entityData);
-                $entitiesTmp[] = $entity;
+                $parsedDTO = EntityFactory::createEntity($entityType, $entityData);
+                $entitiesTmp[] = $parsedDTO;
+//                Entity::create([
+//                    'section' => $parsedDTO->getSection(),
+//                    'protocol' => $parsedDTO->getProtocol(),
+//                    'type' => $parsedDTO->getType(),
+//                    'name' => $parsedDTO->getName(),
+//                    'description' => $parsedDTO->getDescription(),
+//                    'resource_location' => $parsedDTO->getResourceLocation(),
+//                    'entityid' => $parsedDTO->getEntityId(),
+//                    'dynamic_registration' => $parsedDTO->getDynamicRegistration(),
+//                    'client_secret' => $parsedDTO->getClientSecret(),
+//                ]);
             }
         }
 
         $this->setEntities($entitiesTmp);
+
+
     }
 
 }

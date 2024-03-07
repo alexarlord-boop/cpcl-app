@@ -14,7 +14,7 @@ interface EntityInterface
 
     public function getResourceLocation(): string;
 
-    public function getId(): ?string;
+    public function getEntityId(): ?string;
 
     public function getDynamicRegistration(): ?string;
 
