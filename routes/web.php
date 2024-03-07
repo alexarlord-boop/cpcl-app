@@ -20,4 +20,4 @@ use App\Http\Controllers\ProxyController;
 
 Route::get('/', [ProxyController::class, 'index'])->name('proxy.index');
 Route::match(['post'], '/', [ProxyController::class, 'parseAndShow']);
-Route::get('/test-database-connection', [DatabaseTestController::class, 'testDatabaseConnection']);
+Route::get('/test-database-connection', [DatabaseTestController::class, 'testDatabaseConnection'])->middleware('secure');
