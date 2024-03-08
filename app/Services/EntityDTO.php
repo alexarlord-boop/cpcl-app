@@ -87,4 +87,17 @@ class EntityDTO implements EntityInterface
     {
         $this->$section = $section;
     }
+
+    public function __toString(): string
+    {
+        $representation = "Type: {$this->type}, ";
+        $representation .= "Name: {$this->name}, ";
+        $representation .= "Description: {$this->description}, ";
+        $representation .= "Resource Location: {$this->resource_location}, ";
+        $representation .= "Entity ID: {$this->entityid}, ";
+        $representation .= "Dynamic Registration: {$this->dynamic_registration}, ";
+        $representation .= "Client Secret: {$this->client_secret}";
+
+        return $representation;
+    }
 }

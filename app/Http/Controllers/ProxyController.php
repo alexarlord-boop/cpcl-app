@@ -88,10 +88,20 @@ class ProxyController extends Controller
 
     public function processSamlEntity(Request $request)
     {
-        // Process your data here
+
+        $entity = unserialize(json_decode($request->input('samlEntity')));
+        // extract xml metadata -> store it ???
+        $xmlUrl = $entity->getResourceLocation();
+        $response = file_get_contents($xmlUrl);
+        // convert xml to php via SimpleSaml scripts
+        // convert php to json
+        // insert to db
+
+
+
 
         // Send a notification
-        $request->session()->flash('success', 'Data processed successfully!');
+        $request->session()->flash('success', substr($response, 20));
 
         // Redirect back with the notification
         return redirect()->route('proxy.index');

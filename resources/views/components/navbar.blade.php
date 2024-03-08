@@ -19,9 +19,9 @@
                     Actions
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="{{route('clear.cache')}}"><i class="bi bi-trash"></i> Clear cache</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
+                    <a class="dropdown-item" href="{{route('clear.cache')}}"><i class="bi bi-trash text-danger"></i> Clear cache</a>
+{{--                    <a class="dropdown-item" href="#">Another action</a>--}}
+{{--                    <a class="dropdown-item" href="#">Something else here</a>--}}
                 </div>
             </li>
         </ul>
