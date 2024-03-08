@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\Models\Entity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Services\Parser;
 use App\Services\IOUtils;
 use App\Enums\Section;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Symfony\Component\Yaml\Yaml;
 
@@ -16,72 +18,92 @@ class ProxyController extends Controller
     public function index()
     {
         session_start();
-        $_SESSION['new_file'] = null;
-        $_SESSION['uploaded_file'] = null;
-        $uploadDir = 'uploads/';
-
-        return view('proxy.index', [
-            'uploadDir' => $uploadDir,
-            'sections' => Section::toArray(), // Get sections from the Section enum
-        ]);
+        return $this->show();
     }
 
     public function parseAndShow(Request $request)
     {
-        $fileToParse = null;
-        $uploadDir = 'uploads/';
-        $yamlContent = null;
+
+        //$uploadDir = 'uploads/';
 
         if ($request->isMethod('post')) {
             $file = $request->file('file');
 
+            // passing new file
             if ($file) {
+
                 $fileType = $file->getClientOriginalExtension();
+                $fileName = $file->getClientOriginalName();
                 if (strtolower($fileType) !== 'yaml') {
                     return redirect()->back()->with('error', 'Only config files (.yaml) are allowed.');
                 }
 
-                $fileToParse = $uploadDir . $file->getClientOriginalName();
-                $file->move($uploadDir, $fileToParse);
-
-                $_SESSION['new_file'] = $file->getClientOriginalName();
-                $_SESSION['uploaded_file'] = $file->getClientOriginalName();
+                $fileToParse = Constants::UPLOAD_DIR . $fileName;
+                session(['pathFileToParse' => $fileToParse]);
+                $file->move(Constants::UPLOAD_DIR, $fileName);
             }
 
+            // getting from uploads
             if ($request->has('uploadedFile')) {
                 $fileToParse = $request->input('uploadedFile');
-                $_SESSION['uploaded_file'] = explode('/', $fileToParse)[1];
+                session(['pathFileToParse' => $fileToParse]);
             }
 
 
+            $fileToParse = session('pathFileToParse');
             if ($fileToParse) {
+                $fileName = explode("/",$fileToParse)[1];
+
+                session(['uploaded_file' => $fileName]);
                 $io = new IOUtils();
                 $fileContent = $io->readFile($fileToParse);
-                $data = $this->getEntitiesFromYaml($fileContent);
-                $entities = $data['entities'];
-                $rules = $data['rules'];
-                // Parse YAML file
-                //$yamlContent = Yaml::parseFile($fileToParse);
-                $fileName = explode("/",$fileToParse)[1];
-//                return Redirect::route('proxy.index')->with('yamlContent', $yamlContent)->with('fileName', explode("/",$fileToParse)[1]);
-                return view('proxy.index', compact('entities', 'rules','fileName'));
+                $this->getEntitiesFromYaml($fileContent);
+                $entities = Cache::get('entities');
+                $rules = Cache::get('rules');
+
+                Cache::put('rules', $rules, Constants::ENTITY_CACHE_LIVE);
+                return view('proxy.index', compact('entities', 'rules', 'fileName'));
             }
         }
 
-        // ... Rest of your logic
-//        return Redirect::route('proxy.index')->with('yamlContent', $yamlContent);
-        return view('proxy.index', compact($yamlContent));
+        $this->show();
     }
 
-    private function getEntitiesFromYaml($fileContent): array
+    public function show() {
+        $entities = Cache::get('entities');
+        $rules = Cache::get('rules');
+        $fileName = session('uploaded_file');
+        return view('proxy.index', compact('entities', 'rules', 'fileName'));
+    }
+
+    private function getEntitiesFromYaml($fileContent)
     {
         $parser = new Parser();
         $yamlData = $parser->parseYamlFile($fileContent);
         $rules = $yamlData['rules'];
         $parser->extractEntities($yamlData);
-        return array('entities'=>$parser->getEntities(), 'rules'=>$rules);
-//        return Entity::all();
+        Cache::put('entities', $parser->getEntities(), Constants::ENTITY_CACHE_LIVE);
+        Cache::put('rules', $rules, Constants::ENTITY_CACHE_LIVE);
     }
 
-    // ... Rest of your controller methods
+    public function processSamlEntity(Request $request)
+    {
+        // Process your data here
+
+        // Send a notification
+        $request->session()->flash('success', 'Data processed successfully!');
+
+        // Redirect back with the notification
+        return redirect()->route('proxy.index');
+    }
+
+    public function clearCache(Request $request)
+    {
+        Cache::forget('entities');
+        Cache::forget('rules');
+        session()->forget('uploaded_file');
+        session()->forget('pathFileToParse');
+
+        return $this->show();
+    }
 }
