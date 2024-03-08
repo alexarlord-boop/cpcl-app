@@ -8,8 +8,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
+
+
+<x-navbar/>
+<x-alert/>
+
 <div class="container">
-    <a class="h3" href="/">Proxy configuration</a>
+    <p class="h3 mt-3">Proxy configuration</p>
 
     <div class="container row mt-2 d-flex justify-content-between align-items-center">
 
@@ -22,8 +27,7 @@
                 </div>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="file" name="file" accept=".yaml" required>
-                    <label class="custom-file-label"
-                           for="file"><?= $_SESSION['new_file'] ?? "Choose file" ?></label>
+                    <label class="custom-file-label" for="file">Choose file</label>
                 </div>
             </div>
         </form>
@@ -42,7 +46,7 @@
                     foreach ($files as $file) {
                         if ($file != "." && $file != "..") {
 
-                            if ($_SESSION['uploaded_file'] === $file) {
+                            if (session('uploaded_file') === $file) {
                                 echo "<option selected value=\"$uploadDir$file\">$file</option>";
                             } else {
                                 echo "<option value=\"$uploadDir$file\">$file</option>";
@@ -100,6 +104,10 @@
             var fileName = $(this).val().split('\\').pop();
             $('.custom-file-label').html(fileName);
         });
+    });
+
+    $(document).ready(function() {
+        $('.toast').toast('show');
     });
 </script>
 </body>
