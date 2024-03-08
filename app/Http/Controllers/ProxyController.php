@@ -80,7 +80,7 @@ class ProxyController extends Controller
     {
         $parser = new Parser();
         $yamlData = $parser->parseYamlFile($fileContent);
-        $rules = $yamlData['rules'];
+        $rules = $yamlData['rules'] ?? null;
         $parser->extractEntities($yamlData);
         Cache::put('entities', $parser->getEntities(), Constants::ENTITY_CACHE_LIVE);
         Cache::put('rules', $rules, Constants::ENTITY_CACHE_LIVE);
