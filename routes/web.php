@@ -24,3 +24,6 @@ Route::get('/test-basic', function () {
     return 'Basic route works!';
 });
 Route::get('/test-db', [DatabaseTestController::class, 'testDatabaseConnection']);
+
+Route::post('/process-saml', [ProxyController::class, 'processSamlEntity'])->name('process.saml');
+Route::get('/clear-cache', [ProxyController::class, 'clearCache'])->name('clear.cache');
