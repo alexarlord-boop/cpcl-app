@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Constants;
-use App\Models\Entity;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use App\Services\Parser;
+use App\Enums\EntityType;
+use App\Enums\MetadataStrings;
 use App\Services\IOUtils;
-use App\Enums\Section;
+use App\Services\Parser;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redirect;
-use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+//use SimpleSAML\Configuration;
+use SimpleSAML\Metadata\MetaDataStorageSource;
+use SimpleXMLElement;
+
 
 class ProxyController extends Controller
 {
@@ -52,7 +57,7 @@ class ProxyController extends Controller
 
             $fileToParse = session('pathFileToParse');
             if ($fileToParse) {
-                $fileName = explode("/",$fileToParse)[1];
+                $fileName = explode("/", $fileToParse)[1];
 
                 session(['uploaded_file' => $fileName]);
                 $io = new IOUtils();
@@ -69,7 +74,8 @@ class ProxyController extends Controller
         $this->show();
     }
 
-    public function show() {
+    public function show()
+    {
         $entities = Cache::get('entities');
         $rules = Cache::get('rules');
         $fileName = session('uploaded_file');
@@ -87,27 +93,96 @@ class ProxyController extends Controller
     }
 
     public function processSamlEntity(Request $request)
+        // TODO:- check if ssl avoiding is a good option here
     {
 
         $entity = unserialize(json_decode($request->input('samlEntity')));
-        // extract xml metadata -> store it ???
+
+        // extract xml metadata
         $xmlUrl = $entity->getResourceLocation();
-        $response = file_get_contents($xmlUrl);
+        // $filePath = Constants::XML_METADATA_DIR . $entity->getType() . '.xml';
+        $srcXml = $this->getXmlMetadata($request, $xmlUrl);
+
+        if ($entity->getType() == EntityType::IDP || $entity->getType() == EntityType::IDPS) {
+            $set = MetadataStrings::IDP_SET;
+            $table = MetadataStrings::IDP_TABLE;
+        } elseif ($entity->getType() == EntityType::SP || $entity->getType() == EntityType::SPS) {
+            $set = MetadataStrings::SP_SET;
+            $table = MetadataStrings::SP_TABLE;
+        }
+
         // convert xml to php via SimpleSaml scripts
-        // convert php to json
+        $result = $this->parseXmlFileToPhpArray($request, $srcXml, $set);
+
         // insert to db
-
-
-
-
-        // Send a notification
-        $request->session()->flash('success', substr($response, 20));
+        $this->insertToDatabase($request, $result, $table);
 
         // Redirect back with the notification
         return redirect()->route('proxy.index');
     }
 
-    public function clearCache(Request $request)
+    private function insertToDatabase(Request $request, $result, $table)
+    {
+        // decoupling data into id-data pair
+        $firstKeyValuePair = reset($result);
+        $entity_id = key($result);
+        $entity_data = json_encode($firstKeyValuePair);
+
+        try {
+            DB::table($table)->insert([
+                'entity_id' => $entity_id,
+                'entity_data' => $entity_data,
+            ]);
+        } catch (Exception $e) {
+            Log::error("DB failure. Entity ID: $entity_id." . $e->getMessage());
+            $request->session()->flash('error', "DB failure. " . $e->getMessage());
+        }
+    }
+
+    public function getXmlMetadata($request, $xmlUrl): string|null
+    {
+        $ch = curl_init($xmlUrl);
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Ignore SSL verification (use with caution)
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            // Handle the error
+            $request->session()->flash('error', curl_error($ch));
+            curl_close($ch);
+            return null;
+        } else {
+//            $this->storeMetadataInFile($response, $filePath);
+            curl_close($ch);
+            return $response;
+        }
+    }
+
+    private function storeMetadataInFile($response, $filePath)
+    {
+        $directory = dirname($filePath);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+        file_put_contents($filePath, $response, FILE_APPEND | LOCK_EX);
+    }
+
+    function parseXmlFileToPhpArray($request, string $srcXml, $set): ?array
+    {
+        try {
+            return MetaDataStorageSource::getSource(['type' => 'xml', 'xml' => $srcXml])
+                ->getMetadataSet($set);
+        } catch (\Exception $e) {
+            Log::error("Error parsing XML file: " . $e->getMessage() . " " . $e->getCode());
+            $request->session()->flash("error", "Error parsing XML file: " . $e->getMessage() . " " . $e->getCode());
+            return null;
+        }
+    }
+
+
+    public function clearCache()
     {
         Cache::forget('entities');
         Cache::forget('rules');

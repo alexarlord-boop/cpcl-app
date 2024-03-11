@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Enums\EntityProtocol;
 use App\Enums\EntityType;
 use App\Enums\Section;
-
 class EntityFactory
 {
 
