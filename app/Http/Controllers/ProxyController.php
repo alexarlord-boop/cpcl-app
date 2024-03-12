@@ -121,6 +121,12 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
+    public function processOidcEntity(Request $request){
+        $entity = unserialize(json_decode($request->input('oidcEntity')));
+        $request->session()->flash('success', $request->input('oidcEntity'));
+        return redirect()->route('proxy.index');
+    }
+
     private function insertToDatabase(Request $request, $result, $table)
     {
         // decoupling data into id-data pair
@@ -140,7 +146,7 @@ class ProxyController extends Controller
         }
     }
 
-    public function getXmlMetadata($request, $xmlUrl): string|null
+    private function getXmlMetadata($request, $xmlUrl): string|null
     {
         $ch = curl_init($xmlUrl);
         // Set cURL options
@@ -170,7 +176,7 @@ class ProxyController extends Controller
         file_put_contents($filePath, $response, FILE_APPEND | LOCK_EX);
     }
 
-    function parseXmlFileToPhpArray($request, string $srcXml, $set): ?array
+    private function parseXmlFileToPhpArray($request, string $srcXml, $set): ?array
     {
         try {
             return MetaDataStorageSource::getSource(['type' => 'xml', 'xml' => $srcXml])
