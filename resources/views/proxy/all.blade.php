@@ -14,16 +14,16 @@
         {{-- IDP Entries --}}
         @foreach ($idpEntries as $entry)
             <li class="list-group-item">
-                <span>ID: {{ $entry->id }}</span> |
-                <span>Name: {{ $entry->name }}</span>
+                <span>ID: {{ $entry->entity_id }}</span> |
+{{--                <span>Name: {{ $entry->name }}</span>--}}
             </li>
         @endforeach
 
         {{-- SP Entries --}}
         @foreach ($spEntries as $entry)
             <li class="list-group-item">
-                <span>ID: {{ $entry->id }}</span> |
-                <span>Name: {{ $entry->name }}</span>
+                <span>ID: {{ $entry->entity_id }}</span> |
+{{--                <span>Name: {{ $entry->name }}</span>--}}
             </li>
         @endforeach
     </ul>
