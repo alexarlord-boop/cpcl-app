@@ -86,7 +86,6 @@
 
         <x-config-sections :inSection="$inSection" :outSection="$outSection" :rulesSection="$rulesSection"/>
 
-
     @endif
 
 </div>

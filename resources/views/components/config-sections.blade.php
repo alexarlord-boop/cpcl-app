@@ -32,11 +32,6 @@
         <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
             <x-rules-section-entries :sectionEntries="$rulesSection"/>
         </div>
-
-        <!-- All Tab -->
-        <div class="tab-pane fade" id="all" role="tabpanel" aria-labelledby="all-tab">
-            <p>Tab where proxy update progress will be shown</p>
-        </div>
     </div>
 </div>
 
