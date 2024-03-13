@@ -29,3 +29,5 @@ Route::post('/process-saml', [ProxyController::class, 'processSamlEntity'])->nam
 Route::post('/edit-saml', [ProxyController::class, 'editSamlEntity'])->name('edit.saml');
 Route::post('/process-oidc', [ProxyController::class, 'processOidcEntity'])->name('process.oidc');
 Route::get('/clear-cache', [ProxyController::class, 'clearCache'])->name('clear.cache');
+Route::get('/check-all', [ProxyController::class, 'checkAll'])->name('check.all');
+

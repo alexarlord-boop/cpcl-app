@@ -226,4 +226,17 @@ class ProxyController extends Controller
 
         return $this->show();
     }
+
+    public function checkAll(Request $request) {
+        try {
+            $oidcClients = OIDCClient::all();
+            $idpEntries = DB::table(MetadataStrings::IDP_TABLE)->get();
+            $spEntries = DB::table(MetadataStrings::SP_TABLE)->get();
+
+            return view("proxy.all", compact('oidcClients', 'idpEntries', 'spEntries'));
+        } catch (Exception $e){
+            $request->session()->flash('error', 'Error: ' . $e->getMessage());
+            return redirect()->route('proxy.index');
+        }
+    }
 }
