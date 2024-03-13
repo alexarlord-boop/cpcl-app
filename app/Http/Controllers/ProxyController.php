@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants;
 use App\Enums\EntityType;
 use App\Enums\MetadataStrings;
+use App\Models\OidcClient;
 use App\Services\IOUtils;
 use App\Services\Parser;
 use Exception;
@@ -115,7 +116,7 @@ class ProxyController extends Controller
         $result = $this->parseXmlFileToPhpArray($request, $srcXml, $set);
 
         // insert to db
-        $this->insertToDatabase($request, $result, $table);
+        $this->insertSamlToDatabase($request, $result, $table);
 
         // Redirect back with the notification
         return redirect()->route('proxy.index');
@@ -123,11 +124,13 @@ class ProxyController extends Controller
 
     public function processOidcEntity(Request $request){
         $entity = unserialize(json_decode($request->input('oidcEntity')));
-        $request->session()->flash('success', $request->input('oidcEntity'));
+
+        $this->insertOidcToDatabase($request);
+
         return redirect()->route('proxy.index');
     }
 
-    private function insertToDatabase(Request $request, $result, $table)
+    private function insertSamlToDatabase(Request $request, $result, $table)
     {
         // decoupling data into id-data pair
         $firstKeyValuePair = reset($result);
@@ -143,6 +146,30 @@ class ProxyController extends Controller
         } catch (Exception $e) {
             Log::error("DB failure. Entity ID: $entity_id." . $e->getMessage());
             $request->session()->flash('error', "DB failure. " . $e->getMessage());
+        }
+    }
+
+    private function insertOidcToDatabase(Request $request){
+        try {
+            OidcClient::create([
+                'id' => '_ccc2f28ef0243aadd606324a7ed9b2492f76014ae4',
+                'secret' => '_ce393694c94fc7a63e0f46789e2050e24ae90b1368',
+                'name' => 'Test RP',
+                'description' => '',
+                'auth_source' => 'default-sp',
+                'redirect_uri' => '["https://alpe4.incubator.geant.org/simplesaml/module.php/authoauth2/linkback.php"]',
+                'scopes' => '["openid","email","private"]',
+                'is_enabled' => 1,
+                'is_confidential' => 1,
+                'owner' => NULL,
+                'post_logout_redirect_uri' => NULL,
+                'backchannel_logout_uri' => NULL,
+            ]);
+
+            $request->session()->flash('success', 'Inserted successfully.');
+        } catch (\Exception $e) {
+            Log::error('DB failure: ' . $e->getMessage());
+            $request->session()->flash('error', 'DB failure: ' . $e->getMessage());
         }
     }
 
