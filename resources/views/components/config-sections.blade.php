@@ -12,10 +12,6 @@
             <a class="nav-link" id="rules-tab" data-toggle="tab" href="#rules" role="tab" aria-controls="rules"
                aria-selected="false">Rules</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all"
-               aria-selected="false">All</a>
-        </li>
     </ul>
     <div class="tab-content mt-2">
         <!-- IN Tab -->
