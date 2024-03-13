@@ -2,31 +2,32 @@
 @section('title', 'Proxy objects')
 
 @section('content')
-    <ul class="list-group">
-        {{-- OIDC Clients --}}
-        @foreach ($oidcClients as $client)
-            <li class="list-group-item">
-                <span>ID: {{ $client->id }}</span> |
-                <span>Name: {{ $client->name }}</span>
-            </li>
-        @endforeach
+    <div class="container">
+        <ul class="list-group">
+            {{-- OIDC Clients --}}
+            @foreach ($oidcClients as $client)
+                <li class="list-group-item">
+                    <span>{{ $client->name }}</span>
+                </li>
+            @endforeach
 
-        {{-- IDP Entries --}}
-        @foreach ($idpEntries as $entry)
-            <li class="list-group-item">
-                <span>ID: {{ $entry->entity_id }}</span> |
-{{--                <span>Name: {{ $entry->name }}</span>--}}
-            </li>
-        @endforeach
+            {{-- IDP Entries --}}
+            @foreach ($idpEntries as $entry)
+                <li class="list-group-item">
+                    <span>{{ $entry->entity_id }}</span>
+                    {{--                <span>Name: {{ $entry->name }}</span>--}}
+                </li>
+            @endforeach
 
-        {{-- SP Entries --}}
-        @foreach ($spEntries as $entry)
-            <li class="list-group-item">
-                <span>ID: {{ $entry->entity_id }}</span> |
-{{--                <span>Name: {{ $entry->name }}</span>--}}
-            </li>
-        @endforeach
-    </ul>
+            {{-- SP Entries --}}
+            @foreach ($spEntries as $entry)
+                <li class="list-group-item">
+                    <span>{{ $entry->entity_id }}</span>
+                    {{--                <span>Name: {{ $entry->name }}</span>--}}
+                </li>
+            @endforeach
+        </ul>
+    </div>
 
 @endsection
 
