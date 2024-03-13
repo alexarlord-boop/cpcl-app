@@ -6,6 +6,7 @@ use App\Constants;
 use App\Enums\EntityType;
 use App\Enums\MetadataStrings;
 use App\Models\OidcClient;
+use App\Services\EntityDTO;
 use App\Services\IOUtils;
 use App\Services\Parser;
 use Exception;
@@ -125,7 +126,7 @@ class ProxyController extends Controller
     public function processOidcEntity(Request $request){
         $entity = unserialize(json_decode($request->input('oidcEntity')));
 
-        $this->insertOidcToDatabase($request);
+        $this->insertOidcToDatabase($request, $entity);
 
         return redirect()->route('proxy.index');
     }
@@ -149,15 +150,15 @@ class ProxyController extends Controller
         }
     }
 
-    private function insertOidcToDatabase(Request $request){
+    private function insertOidcToDatabase(Request $request, EntityDTO $entity){
         try {
             OidcClient::create([
-                'id' => '_ccc2f28ef0243aadd606324a7ed9b2492f76014ae4',
-                'secret' => '_ce393694c94fc7a63e0f46789e2050e24ae90b1368',
-                'name' => 'Test RP',
-                'description' => '',
+                'id' => $entity->getEntityId(),
+                'secret' => $entity->getClientSecret(),
+                'name' => $entity->getName(),
+                'description' => $entity->getDescription(),
                 'auth_source' => 'default-sp',
-                'redirect_uri' => '["https://alpe4.incubator.geant.org/simplesaml/module.php/authoauth2/linkback.php"]',
+                'redirect_uri' => $entity->getResourceLocation(),
                 'scopes' => '["openid","email","private"]',
                 'is_enabled' => 1,
                 'is_confidential' => 1,
@@ -166,7 +167,7 @@ class ProxyController extends Controller
                 'backchannel_logout_uri' => NULL,
             ]);
 
-            $request->session()->flash('success', 'Inserted successfully.');
+            $request->session()->flash('success', 'Inserted ' . $entity->getName() . ' successfully.');
         } catch (\Exception $e) {
             Log::error('DB failure: ' . $e->getMessage());
             $request->session()->flash('error', 'DB failure: ' . $e->getMessage());
