@@ -14,7 +14,7 @@ class OidcClient extends Model
     ];
 
     // If the primary key is not 'id'
-//    protected $primaryKey = 'id';
+    protected $primaryKey = 'id';
     protected $table = 'oidc_client';
     public $timestamps = false;
 }
