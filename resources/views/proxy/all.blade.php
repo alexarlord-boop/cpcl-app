@@ -5,9 +5,9 @@
     <div class="container">
         <ul class="list-group">
             {{-- OIDC Clients --}}
-            @foreach ($oidcClients as $client)
+            @foreach ($oidcClients as $entry)
                 <li class="list-group-item">
-                    <x-delete-btn/>
+                    <x-delete-btn :entry="$entry"/>
                     <span>{{ $client->name }}</span>
                 </li>
             @endforeach
@@ -15,7 +15,7 @@
             {{-- IDP Entries --}}
             @foreach ($idpEntries as $entry)
                 <li class="list-group-item">
-                    <x-delete-btn/>
+                    <x-delete-btn :entry="$entry"/>
                     <span>{{ $entry->entity_id }}</span>
                     {{--                <span>Name: {{ $entry->name }}</span>--}}
                 </li>
@@ -24,7 +24,7 @@
             {{-- SP Entries --}}
             @foreach ($spEntries as $entry)
                 <li class="list-group-item">
-                    <x-delete-btn/>
+                    <x-delete-btn :entry="$entry"/>
                     <span>{{ $entry->entity_id }}</span>
                     {{--                <span>Name: {{ $entry->name }}</span>--}}
                 </li>
