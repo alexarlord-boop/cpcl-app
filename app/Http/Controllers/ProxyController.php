@@ -99,26 +99,30 @@ class ProxyController extends Controller
         // TODO:- check if ssl avoiding is a good option here
     {
 
-        $entity = unserialize(json_decode($request->input('samlEntity')));
+        try {
+            $entity = unserialize(json_decode($request->input('samlEntity')));
 
-        // extract xml metadata
-        $xmlUrl = $entity->getResourceLocation();
-        // $filePath = Constants::XML_METADATA_DIR . $entity->getType() . '.xml';
-        $srcXml = $this->getXmlMetadata($request, $xmlUrl);
+            // extract xml metadata
+            $xmlUrl = $entity->getResourceLocation();
+            // $filePath = Constants::XML_METADATA_DIR . $entity->getType() . '.xml';
+            $srcXml = $this->getXmlMetadata($request, $xmlUrl);
 
-        if ($entity->getType() == EntityType::IDP || $entity->getType() == EntityType::IDPS) {
-            $set = MetadataStrings::IDP_SET;
-            $table = MetadataStrings::IDP_TABLE;
-        } elseif ($entity->getType() == EntityType::SP || $entity->getType() == EntityType::SPS) {
-            $set = MetadataStrings::SP_SET;
-            $table = MetadataStrings::SP_TABLE;
+            if ($entity->getType() == EntityType::IDP || $entity->getType() == EntityType::IDPS) {
+                $set = MetadataStrings::IDP_SET;
+                $table = MetadataStrings::IDP_TABLE;
+            } elseif ($entity->getType() == EntityType::SP || $entity->getType() == EntityType::SPS) {
+                $set = MetadataStrings::SP_SET;
+                $table = MetadataStrings::SP_TABLE;
+            }
+
+            // convert xml to php via SimpleSaml scripts
+            $result = $this->parseXmlToPhpArray($request, $srcXml, $set);
+
+            // insert to db
+            $this->insertSamlToDatabase($request, $result, $table);
+        } catch (Exception $e) {
+            $request->session()->flash('error', $e->getMessage());
         }
-
-        // convert xml to php via SimpleSaml scripts
-        $result = $this->parseXmlFileToPhpArray($request, $srcXml, $set);
-
-        // insert to db
-        $this->insertSamlToDatabase($request, $result, $table);
 
         // Redirect back with the notification
         return redirect()->route('proxy.index');
@@ -207,7 +211,7 @@ class ProxyController extends Controller
         file_put_contents($filePath, $response, FILE_APPEND | LOCK_EX);
     }
 
-    private function parseXmlFileToPhpArray($request, string $srcXml, $set): ?array
+    private function parseXmlToPhpArray($request, string $srcXml, $set): ?array
     {
         try {
             return MetaDataStorageSource::getSource(['type' => 'xml', 'xml' => $srcXml])
