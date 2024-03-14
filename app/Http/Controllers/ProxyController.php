@@ -145,7 +145,7 @@ class ProxyController extends Controller
                 'entity_id' => $entity_id,
                 'entity_data' => $entity_data,
             ]);
-            $request->session()->flash('success', "Inserted successfully. Entity ID: $entity_id");
+            $request->session()->flash('success', 'Inserted ' . $entity_id . ' successfully.');
         } catch (Exception $e) {
             Log::error("DB failure. Entity ID: $entity_id." . $e->getMessage());
             $request->session()->flash('error', "DB failure. " . $e->getMessage());
