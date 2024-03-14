@@ -5,31 +5,43 @@
     <div class="container mt-5">
         <ul class="list-group">
             {{-- OIDC Clients --}}
-            @foreach ($oidcClients as $entry)
+            @if ($oidcClients->isNotEmpty())
                 <li class="list-group-item">
-{{--                    TODO:- what about OPs --}}
-                    <x-delete-btn :entry="$entry" protocol="oidc" :type="\App\Enums\EntityType::RP" :entryId="$entry->id"/>
-                    <span>{{ $entry->name }}</span>
+                    <h5>OIDC Clients</h5>
+                    @foreach ($oidcClients as $entry)
+                        <x-delete-btn :entry="$entry" protocol="oidc" :type="\App\Enums\EntityType::RP" :entryId="$entry->id"/>
+                        <span>{{ $entry->name }}</span>
+                    @endforeach
                 </li>
-            @endforeach
+            @else
+                <li class="list-group-item">No content</li>
+            @endif
 
             {{-- IDP Entries --}}
-            @foreach ($idpEntries as $entry)
+            @if ($idpEntries->isNotEmpty())
                 <li class="list-group-item">
-                    <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::IDP" :entryId="$entry->entity_id"/>
-                    <span>{{ $entry->entity_id }}</span>
-                    {{--                <span>Name: {{ $entry->name }}</span>--}}
+                    <h5>IDP Entries</h5>
+                    @foreach ($idpEntries as $entry)
+                        <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::IDP" :entryId="$entry->entity_id"/>
+                        <span>{{ $entry->entity_id }}</span>
+                    @endforeach
                 </li>
-            @endforeach
+            @else
+                <li class="list-group-item">No content</li>
+            @endif
 
             {{-- SP Entries --}}
-            @foreach ($spEntries as $entry)
+            @if ($spEntries->isNotEmpty())
                 <li class="list-group-item">
-                    <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::SP" :entryId="$entry->entity_id"/>
-                    <span>{{ $entry->entity_id }}</span>
-                    {{--                <span>Name: {{ $entry->name }}</span>--}}
+                    <h5>SP Entries</h5>
+                    @foreach ($spEntries as $entry)
+                        <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::SP" :entryId="$entry->entity_id"/>
+                        <span>{{ $entry->entity_id }}</span>
+                    @endforeach
                 </li>
-            @endforeach
+            @else
+                <li class="list-group-item">No content</li>
+            @endif
         </ul>
     </div>
 
