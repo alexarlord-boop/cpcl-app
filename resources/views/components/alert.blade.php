@@ -21,7 +21,7 @@
                     </button>
                 </div>
                 <div class="toast-body">
-                    {{ session($status) }}
+                    <pre>{{ session($status) }}</pre>
                 </div>
             </div>
         </div>

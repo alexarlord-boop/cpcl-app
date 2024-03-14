@@ -268,7 +268,7 @@ class ProxyController extends Controller
                         break;
                 }
             }
-            $request->session()->flash('success', "Deleted $id entry");
+            $request->session()->flash('success', "Deleted $id");
         } catch (Exception $e) {
             $request->session()->flash('error', $e->getMessage());
         }
