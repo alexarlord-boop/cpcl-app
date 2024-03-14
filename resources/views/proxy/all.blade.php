@@ -8,7 +8,7 @@
             @foreach ($oidcClients as $entry)
                 <li class="list-group-item">
                     <x-delete-btn :entry="$entry"/>
-                    <span>{{ $client->name }}</span>
+                    <span>{{ $entry->name }}</span>
                 </li>
             @endforeach
 
