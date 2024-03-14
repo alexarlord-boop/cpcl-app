@@ -18,6 +18,7 @@
             @else
                 <li class="list-group-item">No content</li>
             @endif
+            <p class="my-2"></p>
 
             {{-- IDP Entries --}}
             <h5>IDP Entries</h5>
@@ -32,6 +33,7 @@
             @else
                 <li class="list-group-item">No content</li>
             @endif
+            <p class="my-2"></p>
 
             {{-- SP Entries --}}
             <h5>SP Entries</h5>
@@ -46,6 +48,7 @@
             @else
                 <li class="list-group-item">No content</li>
             @endif
+            <p class="my-2"></p>
         </ul>
     </div>
 
