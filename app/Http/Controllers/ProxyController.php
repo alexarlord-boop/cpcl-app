@@ -249,7 +249,7 @@ class ProxyController extends Controller
         try {
             if ($protocol === EntityProtocol::OIDC) {
                 // Delete OIDC entry
-
+                OidcClient::destroy($id);
 
             } elseif ($protocol === EntityProtocol::SAML) {
                 // Delete SAML entry
