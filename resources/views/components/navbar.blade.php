@@ -12,18 +12,18 @@
 {{--                <a class="nav-link" href="#">Features</a>--}}
 {{--            </li>--}}
             <li class="nav-item">
-                <a class="nav-link" href="{{route("check.all")}}">Entities</a>
+                <a class="nav-link" href="{{route("check.all")}}">Trusted Entities</a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Actions
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="{{route('clear.cache')}}"><i class="bi bi-trash text-danger"></i> Clear cache</a>
+{{--            <li class="nav-item dropdown">--}}
+{{--                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
+{{--                    Actions--}}
+{{--                </a>--}}
+{{--                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">--}}
+{{--                    <a class="dropdown-item" href="{{route('clear.cache')}}"><i class="bi bi-trash text-danger"></i> Clear cache</a>--}}
 {{--                    <a class="dropdown-item" href="#">Another action</a>--}}
 {{--                    <a class="dropdown-item" href="#">Something else here</a>--}}
-                </div>
-            </li>
+{{--                </div>--}}
+{{--            </li>--}}
 
 
 
