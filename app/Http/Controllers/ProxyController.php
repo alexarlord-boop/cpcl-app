@@ -236,8 +236,8 @@ class ProxyController extends Controller
             $oidcClients = OIDCClient::all();
             $idpEntries = DB::table(MetadataStrings::IDP_TABLE)->get();
             $spEntries = DB::table(MetadataStrings::SP_TABLE)->get();
-
-            return view("proxy.all", compact('oidcClients', 'idpEntries', 'spEntries'));
+            print_r($oidcClients);
+//            return view("proxy.all", compact('oidcClients', 'idpEntries', 'spEntries'));
         } catch (Exception $e) {
             $request->session()->flash('error', 'Error: ' . $e->getMessage());
             return redirect()->route('proxy.index');
