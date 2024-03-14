@@ -1,3 +1,7 @@
+@php
+$id = uniqid();
+@endphp
+
 <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ $id }}">
     <i class="bi bi-trash"></i>
 </button>
