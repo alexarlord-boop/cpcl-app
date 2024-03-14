@@ -5,6 +5,7 @@
     <div class="container mt-5">
         <ul class="list-group">
             {{-- OIDC Clients --}}
+            <pre>{{$oidcClients}}</pre>
             @foreach ($oidcClients as $entry)
                 <li class="list-group-item">
 {{--                    TODO:- what about OPs --}}
