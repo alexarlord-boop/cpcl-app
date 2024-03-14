@@ -250,6 +250,6 @@ class ProxyController extends Controller
             $id = 1;
         }
         $request->session()->flash('success', "Deleted $id entry");
-        return redirect()->route("proxy.all");
+        return redirect()->route("check.all");
     }
 }
