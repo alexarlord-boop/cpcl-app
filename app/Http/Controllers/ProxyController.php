@@ -244,10 +244,10 @@ class ProxyController extends Controller
     public function deleteEntry(Request $request, $type, $id) {
         if ($type === EntityProtocol::OIDC) {
             // Delete OIDC entry
-            $id = 0;
+            $t = 0;
         } elseif ($type === EntityProtocol::SAML) {
             // Delete SAML entry
-            $id = 1;
+            $t = 0;
         }
         $request->session()->flash('success', "Deleted $id entry");
         return redirect()->route("check.all");

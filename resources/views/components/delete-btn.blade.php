@@ -17,11 +17,11 @@ $id = uniqid();
                 </button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete "{{ $id }}"?
+                Are you sure you want to delete "{{ $entryId }}"?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <form action="{{ route('deleteEntry', ['type' => $type, 'id' => $id]) }}" method="post">
+                <form action="{{ route('deleteEntry', ['type' => $type, 'id' => $entryId]) }}" method="post">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
