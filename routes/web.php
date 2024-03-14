@@ -30,6 +30,6 @@ Route::post('/edit-saml', [ProxyController::class, 'editSamlEntity'])->name('edi
 Route::post('/process-oidc', [ProxyController::class, 'processOidcEntity'])->name('process.oidc');
 Route::get('/clear-cache', [ProxyController::class, 'clearCache'])->name('clear.cache');
 Route::get('/check-all', [ProxyController::class, 'checkAll'])->name('check.all');
-Route::delete('/delete-entry/{type}/{id}', 'ProxyController@deleteEntry')->name('deleteEntry');
+Route::delete('/delete-entry/{type}/{id}', [ProxyController::class,'deleteEntry'])->name('deleteEntry');
 
 
