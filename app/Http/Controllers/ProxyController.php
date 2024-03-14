@@ -181,24 +181,31 @@ class ProxyController extends Controller
         }
     }
 
+    /**
+     * @throws Exception
+     */
     private function getXmlMetadata($request, $xmlUrl): string|null
     {
-        $ch = curl_init($xmlUrl);
-        // Set cURL options
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // Ignore SSL verification (use with caution)
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            // Handle the error
-            $request->session()->flash('error', curl_error($ch));
-            curl_close($ch);
-            return null;
-        } else {
+        try {
+            $ch = curl_init($xmlUrl);
+            // Set cURL options
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            // Ignore SSL verification (use with caution)
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            $response = curl_exec($ch);
+            if (curl_errno($ch)) {
+                // Handle the error
+                $request->session()->flash('error', curl_error($ch));
+                curl_close($ch);
+                return null;
+            } else {
 //            $this->storeMetadataInFile($response, $filePath);
-            curl_close($ch);
-            return $response;
+                curl_close($ch);
+                return $response;
+            }
+        } catch (Exception $e) {
+            throw new Exception(message: $e->getMessage());
         }
     }
 
