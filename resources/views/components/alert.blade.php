@@ -20,8 +20,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="toast-body">
-                    <pre>{{ session($status) }}</pre>
+                <div class="toast-body pb-0">
+                    <pre class="pb-3">{{ session($status) }}</pre>
                 </div>
             </div>
         </div>

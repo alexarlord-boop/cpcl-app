@@ -5,11 +5,13 @@
     <div class="container mt-5">
         <ul class="list-group">
             {{-- OIDC Clients --}}
+            <h5>OIDC Clients</h5>
             @if ($oidcClients->isNotEmpty())
                 <li class="list-group-item">
-                    <h5>OIDC Clients</h5>
+
                     @foreach ($oidcClients as $entry)
-                        <x-delete-btn :entry="$entry" protocol="oidc" :type="\App\Enums\EntityType::RP" :entryId="$entry->id"/>
+                        <x-delete-btn :entry="$entry" protocol="oidc" :type="\App\Enums\EntityType::RP"
+                                      :entryId="$entry->id"/>
                         <span>{{ $entry->name }}</span>
                     @endforeach
                 </li>
@@ -18,11 +20,12 @@
             @endif
 
             {{-- IDP Entries --}}
+            <h5>IDP Entries</h5>
             @if ($idpEntries->isNotEmpty())
                 <li class="list-group-item">
-                    <h5>IDP Entries</h5>
                     @foreach ($idpEntries as $entry)
-                        <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::IDP" :entryId="$entry->entity_id"/>
+                        <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::IDP"
+                                      :entryId="$entry->entity_id"/>
                         <span>{{ $entry->entity_id }}</span>
                     @endforeach
                 </li>
@@ -31,11 +34,12 @@
             @endif
 
             {{-- SP Entries --}}
+            <h5>SP Entries</h5>
             @if ($spEntries->isNotEmpty())
                 <li class="list-group-item">
-                    <h5>SP Entries</h5>
                     @foreach ($spEntries as $entry)
-                        <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::SP" :entryId="$entry->entity_id"/>
+                        <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::SP"
+                                      :entryId="$entry->entity_id"/>
                         <span>{{ $entry->entity_id }}</span>
                     @endforeach
                 </li>
