@@ -6,7 +6,6 @@ class EntityDTO implements EntityInterface
 {
     private string $section;
     private string $protocol;
-
     private string $type;
     private string $name;
     private string $description;
