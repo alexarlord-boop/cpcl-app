@@ -7,20 +7,6 @@
 
         <div class="container row mt-2 d-flex justify-content-between align-items-center">
 
-            <!-- ... Upload config from pc ... -->
-            <form action="/" method="post" enctype="multipart/form-data">
-                @csrf
-                <div class="input-group input-group mb-3">
-                    <div class="input-group-prepend">
-                        <button type="submit" class="input-group-append btn btn-outline-success">⬆upload</button>
-                    </div>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="file" name="file" accept=".yaml" required>
-                        <label class="custom-file-label" for="file">Choose file</label>
-                    </div>
-                </div>
-            </form>
-
             <!-- ... Get config from uploads ... -->
             <form action="/" method="post" enctype="multipart/form-data">
                 @csrf
@@ -51,13 +37,27 @@
                 </div>
             </form>
 
+            <!-- ... Upload config from pc ... -->
+            <form action="/" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="input-group input-group mb-3">
+                    <div class="input-group-prepend">
+                        <button type="submit" class="input-group-append btn btn-outline-success">⬆upload</button>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="file" name="file" accept=".yaml" required>
+                        <label class="custom-file-label" for="file">Choose file</label>
+                    </div>
+                </div>
+            </form>
+
         </div>
 
         <!-- ... Config file content divided in sections ... -->
         @if(isset($entities))
             @if(isset($fileName))
                 <div class="mt-2">
-                    <h5>File: <span class="text-secondary">{{$fileName}}</span></h5>
+
                 </div>
             @endif
 
