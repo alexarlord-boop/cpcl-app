@@ -7,7 +7,8 @@
             {{-- OIDC Clients --}}
             @foreach ($oidcClients as $entry)
                 <li class="list-group-item">
-                    <x-delete-btn :entry="$entry" type="oidc" :entryId="$entry->id"/>
+{{--                    TODO:- what about OPs --}}
+                    <x-delete-btn :entry="$entry" protocol="oidc" :type="\App\Enums\EntityType::RP" :entryId="$entry->id"/>
                     <span>{{ $entry->name }}</span>
                 </li>
             @endforeach
@@ -15,7 +16,7 @@
             {{-- IDP Entries --}}
             @foreach ($idpEntries as $entry)
                 <li class="list-group-item">
-                    <x-delete-btn :entry="$entry" type="saml" :entryId="$entry->entity_id"/>
+                    <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::IDP" :entryId="$entry->entity_id"/>
                     <span>{{ $entry->entity_id }}</span>
                     {{--                <span>Name: {{ $entry->name }}</span>--}}
                 </li>
@@ -24,7 +25,7 @@
             {{-- SP Entries --}}
             @foreach ($spEntries as $entry)
                 <li class="list-group-item">
-                    <x-delete-btn :entry="$entry" type="saml" :entryId="$entry->entity_id"/>
+                    <x-delete-btn :entry="$entry" protocol="saml" :type="\App\Enums\EntityType::SP" :entryId="$entry->entity_id"/>
                     <span>{{ $entry->entity_id }}</span>
                     {{--                <span>Name: {{ $entry->name }}</span>--}}
                 </li>

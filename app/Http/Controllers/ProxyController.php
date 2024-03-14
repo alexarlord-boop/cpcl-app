@@ -124,7 +124,8 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    public function processOidcEntity(Request $request){
+    public function processOidcEntity(Request $request)
+    {
         $entity = unserialize(json_decode($request->input('oidcEntity')));
 
         $this->insertOidcToDatabase($request, $entity);
@@ -151,7 +152,8 @@ class ProxyController extends Controller
         }
     }
 
-    private function insertOidcToDatabase(Request $request, EntityDTO $entity){
+    private function insertOidcToDatabase(Request $request, EntityDTO $entity)
+    {
         try {
             OidcClient::create([
                 'id' => $entity->getEntityId(),
@@ -228,28 +230,48 @@ class ProxyController extends Controller
         return $this->show();
     }
 
-    public function checkAll(Request $request) {
+    public function checkAll(Request $request)
+    {
         try {
             $oidcClients = OIDCClient::all();
             $idpEntries = DB::table(MetadataStrings::IDP_TABLE)->get();
             $spEntries = DB::table(MetadataStrings::SP_TABLE)->get();
 
             return view("proxy.all", compact('oidcClients', 'idpEntries', 'spEntries'));
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $request->session()->flash('error', 'Error: ' . $e->getMessage());
             return redirect()->route('proxy.index');
         }
     }
 
-    public function deleteEntry(Request $request, $type, $id) {
-        if ($type === EntityProtocol::OIDC) {
-            // Delete OIDC entry
-            $t = 0;
-        } elseif ($type === EntityProtocol::SAML) {
-            // Delete SAML entry
-            $t = 0;
+    public function deleteEntry(Request $request, $protocol, $type, $id)
+    {
+        try {
+            if ($protocol === EntityProtocol::OIDC) {
+                // Delete OIDC entry
+
+
+            } elseif ($protocol === EntityProtocol::SAML) {
+                // Delete SAML entry
+                switch ($type) {
+                    case EntityType::IDP:
+                    case EntityType::IDPS:
+                        DB::table(MetadataStrings::IDP_TABLE)->where('entity_id', '=', $id)->delete();
+                        break;
+                    case EntityType::SP:
+                    case EntityType::SPS:
+                        DB::table(MetadataStrings::SP_TABLE)->where('entity_id', '=', $id)->delete();
+                        break;
+                    default:
+                        // Handle unknown entity type
+                        break;
+                }
+            }
+            $request->session()->flash('success', "Deleted $id entry");
+        } catch (Exception $e) {
+            $request->session()->flash('error', $e->getMessage());
         }
-        $request->session()->flash('success', "Deleted $id entry");
+
         return redirect()->route("check.all");
     }
 }
