@@ -21,7 +21,7 @@ $id = uniqid();
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <form action="{{ route('deleteEntry', ['protocol' => $protocol, 'type' => $type, 'id' => $entryId]) }}" method="post">
+                <form action="{{ route('deleteEntry', ['protocol' => $protocol, 'type' => $type, 'id' => base64_encode($entryId)]) }}" method="post">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>

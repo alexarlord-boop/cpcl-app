@@ -247,6 +247,7 @@ class ProxyController extends Controller
     public function deleteEntry(Request $request, $protocol, $type, $id)
     {
         try {
+            $id = base64_decode($id);
             if ($protocol === EntityProtocol::OIDC) {
                 // Delete OIDC entry
                 OidcClient::destroy($id);
