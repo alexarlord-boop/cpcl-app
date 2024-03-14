@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants;
+use App\Enums\EntityProtocol;
 use App\Enums\EntityType;
 use App\Enums\MetadataStrings;
 use App\Models\OidcClient;
@@ -238,5 +239,17 @@ class ProxyController extends Controller
             $request->session()->flash('error', 'Error: ' . $e->getMessage());
             return redirect()->route('proxy.index');
         }
+    }
+
+    public function deleteEntry(Request $request, $type, $id) {
+        if ($type === EntityProtocol::OIDC) {
+            // Delete OIDC entry
+            $id = 0;
+        } elseif ($type === EntityProtocol::SAML) {
+            // Delete SAML entry
+            $id = 1;
+        }
+        $request->session()->flash('success', "Deleted $id entry");
+        return redirect()->route("proxy.all");
     }
 }

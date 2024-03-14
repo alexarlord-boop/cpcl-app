@@ -1,9 +1,9 @@
-<button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ $entry->id }}">
+<button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ $id }}">
     <i class="bi bi-trash"></i>
 </button>
 <!-- Delete Modal -->
-<div class="modal fade" id="deleteModal{{ $entry->id }}" tabindex="-1" role="dialog"
-     aria-labelledby="deleteModalLabel{{ $entry->id }}" aria-hidden="true">
+<div class="modal fade" id="deleteModal{{ $id }}" tabindex="-1" role="dialog"
+     aria-labelledby="deleteModalLabel{{ $id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -17,7 +17,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-{{--                <form action="{{ route('deleteEntry', ['id' => $entry->id]) }}" method="post">--}}
+{{--                <form action="{{ route('deleteEntry', ['id' => $id]) }}" method="post">--}}
                 <form method="post">
                     @csrf
                     @method('DELETE')
