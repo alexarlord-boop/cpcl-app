@@ -145,11 +145,11 @@ class ProxyController extends Controller
         $entity_data = json_encode($firstKeyValuePair);
 
         try {
-            DB::table($table)->insert([
-                'entity_id' => $entity_id,
-                'entity_data' => $entity_data,
-            ]);
-            $request->session()->flash('success', 'Inserted ' . $entity_id . ' successfully.');
+            DB::table($table)->updateOrInsert(
+                ['entity_id' => $entity_id], // Key to check if the record exists
+                ['entity_data' => $entity_data] // Data to insert or update
+            );
+            $request->session()->flash('success', 'Inserted or updated ' . $entity_id . ' successfully.');
         } catch (Exception $e) {
             Log::error("DB failure. Entity ID: $entity_id." . $e->getMessage());
             $request->session()->flash('error', "DB failure. " . $e->getMessage());
@@ -159,22 +159,24 @@ class ProxyController extends Controller
     private function insertOidcToDatabase(Request $request, EntityDTO $entity)
     {
         try {
-            OidcClient::create([
-                'id' => $entity->getEntityId(),
-                'secret' => $entity->getClientSecret(),
-                'name' => $entity->getName(),
-                'description' => $entity->getDescription(),
-                'auth_source' => 'default-sp',
-                'redirect_uri' => json_encode([$entity->getResourceLocation()]),
-                'scopes' => '["openid","email","private"]',
-                'is_enabled' => 1,
-                'is_confidential' => 1,
-                'owner' => NULL,
-                'post_logout_redirect_uri' => NULL,
-                'backchannel_logout_uri' => NULL,
-            ]);
+            OidcClient::updateOrCreate(
+                ['id' => $entity->getEntityId()], // Key to check if the record exists
+                [
+                    'secret' => $entity->getClientSecret(),
+                    'name' => $entity->getName(),
+                    'description' => $entity->getDescription(),
+                    'auth_source' => 'default-sp',
+                    'redirect_uri' => json_encode([$entity->getResourceLocation()]),
+                    'scopes' => '["openid","email","private"]',
+                    'is_enabled' => 1,
+                    'is_confidential' => 1,
+                    'owner' => NULL,
+                    'post_logout_redirect_uri' => NULL,
+                    'backchannel_logout_uri' => NULL,
+                ]
+            );
 
-            $request->session()->flash('success', 'Inserted ' . $entity->getName() . ' successfully.');
+            $request->session()->flash('success', 'Inserted or updated ' . $entity->getName() . ' successfully.');
         } catch (\Exception $e) {
             Log::error('DB failure: ' . $e->getMessage());
             $request->session()->flash('error', 'DB failure: ' . $e->getMessage());
