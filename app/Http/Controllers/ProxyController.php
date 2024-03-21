@@ -104,37 +104,9 @@ class ProxyController extends Controller
 
             // update the config: module_metarefresh.php
             // Read a file
-            // Check if the disk exists
-            $diskName = 'simplesamlphp';
-            if (!Storage::disk($diskName)->exists("/config.php")) {
-                // Handle the case where the disk doesn't exist
-                $request->session()->flash('error', "Disk '$diskName' does not exist.");
-            } else {
-                // Get the files in the directory
-                $files = Storage::disk($diskName)->allFiles();
+            $contents = file_get_contents('/var/simplesamlphp/config/module_metarefresh.php');
+            $request->session()->flash('error', str($contents));
 
-                // Check if any files were found
-                if (empty($files)) {
-                    // Handle the case where no files were found
-                    $request->session()->flash('error', "No files found in directory.");
-                } else {
-                    // Initialize an empty string to store the concatenated contents
-                    $allContents = '';
-
-                    // Loop through each file and concatenate its contents
-                    foreach ($files as $file) {
-                        $content = Storage::disk($diskName)->get($file);
-                        // Concatenate the file contents
-                        $allContents .= "File: $file\n";
-                        $allContents .= "Content:\n";
-                        $allContents .= $content;
-                        $allContents .= "\n\n"; // Add a new line between files
-                    }
-
-                    // Flash the concatenated contents to the session
-                    $request->session()->flash('success', $allContents);
-                }
-            }
 
 
         } catch (Exception $e) {
