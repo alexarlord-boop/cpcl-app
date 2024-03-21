@@ -104,7 +104,7 @@ class ProxyController extends Controller
 
             // update the config: module_metarefresh.php
             // Read a file
-            $filePath = '/var/simplesamlphp/config/module_metarefresh.php';
+            $filePath = '/var/simplesamlphp/config/config.php';
 
             // Check if the file exists
             if (file_exists($filePath)) {
