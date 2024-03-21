@@ -104,8 +104,18 @@ class ProxyController extends Controller
 
             // update the config: module_metarefresh.php
             // Read a file
-            $contents = file_get_contents('/var/simplesamlphp/config/module_metarefresh.php');
-            $request->session()->flash('error', str($contents));
+            $filePath = '/var/simplesamlphp/config/module_metarefresh.php';
+
+            // Check if the file exists
+            if (file_exists($filePath)) {
+                // Read the contents of the file
+                $fileContents = file_get_contents($filePath);
+                // Process the file contents...
+                $request->session()->flash('error', $fileContents);
+            } else {
+                // File does not exist
+                echo "File does not exist at $filePath";
+            }
 
 
 
