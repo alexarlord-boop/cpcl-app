@@ -106,7 +106,7 @@ class ProxyController extends Controller
             // Read a file
             // Check if the disk exists
             $diskName = 'simplesamlphp';
-            if (!Storage::disk($diskName)->exists()) {
+            if (!Storage::disk($diskName)->exists("/")) {
                 // Handle the case where the disk doesn't exist
                 $request->session()->flash('error', "Disk '$diskName' does not exist.");
             } else {
