@@ -114,7 +114,7 @@ class ProxyController extends Controller
                 $request->session()->flash('error', $fileContents);
             } else {
                 // File does not exist
-                echo "File does not exist at $filePath";
+                $request->session()->flash('error', "File does not exist at $filePath");
             }
 
 
