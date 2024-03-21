@@ -104,24 +104,37 @@ class ProxyController extends Controller
 
             // update the config: module_metarefresh.php
             // Read a file
-            // Get the files in the directory
-            $files = Storage::disk('simplesamlphp')->allFiles();
+            // Check if the disk exists
+            $diskName = 'simplesamlphp';
+            if (!Storage::disk($diskName)->exists()) {
+                // Handle the case where the disk doesn't exist
+                $request->session()->flash('error', "Disk '$diskName' does not exist.");
+            } else {
+                // Get the files in the directory
+                $files = Storage::disk($diskName)->allFiles();
 
-// Initialize an empty string to store the concatenated contents
-            $allContents = '';
+                // Check if any files were found
+                if (empty($files)) {
+                    // Handle the case where no files were found
+                    $request->session()->flash('error', "No files found in directory.");
+                } else {
+                    // Initialize an empty string to store the concatenated contents
+                    $allContents = '';
 
-// Loop through each file and concatenate its contents
-            foreach ($files as $file) {
-                $content = Storage::disk('simplesamlphp')->get($file);
-                // Concatenate the file contents
-                $allContents .= "File: $file\n";
-                $allContents .= "Content:\n";
-                $allContents .= $content;
-                $allContents .= "\n\n"; // Add a new line between files
+                    // Loop through each file and concatenate its contents
+                    foreach ($files as $file) {
+                        $content = Storage::disk($diskName)->get($file);
+                        // Concatenate the file contents
+                        $allContents .= "File: $file\n";
+                        $allContents .= "Content:\n";
+                        $allContents .= $content;
+                        $allContents .= "\n\n"; // Add a new line between files
+                    }
+
+                    // Flash the concatenated contents to the session
+                    $request->session()->flash('success', $allContents);
+                }
             }
-
-// Flash the concatenated contents to the session
-            $request->session()->flash('success', $allContents);
 
 
         } catch (Exception $e) {
