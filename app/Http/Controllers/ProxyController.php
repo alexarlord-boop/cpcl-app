@@ -104,7 +104,8 @@ class ProxyController extends Controller
 
             // update the config: module_metarefresh.php
             // Read a file
-            $filePath = '/var/simplesamlphp/config/config.php';
+            $filePath = '/var/www/laravel-app/public/metarefresh/config.php';
+
 
             // Check if the file exists
             if (file_exists($filePath)) {
