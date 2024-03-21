@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 //use SimpleSAML\Configuration;
+use Illuminate\Support\Facades\Storage;
 use SimpleSAML\Metadata\MetaDataStorageSource;
 use SimpleXMLElement;
 
@@ -96,30 +97,19 @@ class ProxyController extends Controller
     }
 
     public function processSamlEntity(Request $request)
-        // TODO:- check if ssl avoiding is a good option here
     {
 
         try {
             $entity = unserialize(json_decode($request->input('samlEntity')));
 
-            // extract xml metadata
-            $xmlUrl = $entity->getResourceLocation();
-            // $filePath = Constants::XML_METADATA_DIR . $entity->getType() . '.xml';
-            $srcXml = $this->getXmlMetadata($request, $xmlUrl);
+            // update the config: module_metarefresh.php
+            // Read a file
+            $content = Storage::disk('simplesamlphp')->get('module_metarefresh.php');
+            $request->session()->flash('error', $content);
 
-            if ($entity->getType() == EntityType::IDP || $entity->getType() == EntityType::IDPS) {
-                $set = MetadataStrings::IDP_SET;
-                $table = MetadataStrings::IDP_TABLE;
-            } elseif ($entity->getType() == EntityType::SP || $entity->getType() == EntityType::SPS) {
-                $set = MetadataStrings::SP_SET;
-                $table = MetadataStrings::SP_TABLE;
-            }
 
-            // convert xml to php via SimpleSaml scripts
-            $result = $this->parseXmlToPhpArray($request, $srcXml, $set);
 
-            // insert to db
-            $this->insertSamlToDatabase($request, $result, $table);
+
         } catch (Exception $e) {
             $request->session()->flash('error', $e->getMessage());
         }
