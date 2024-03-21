@@ -104,10 +104,24 @@ class ProxyController extends Controller
 
             // update the config: module_metarefresh.php
             // Read a file
-            $content = Storage::disk('simplesamlphp')->get('module_metarefresh.php');
-            $request->session()->flash('success', str($content));
+            // Get the files in the directory
+            $files = Storage::disk('simplesamlphp')->allFiles();
 
+// Initialize an empty string to store the concatenated contents
+            $allContents = '';
 
+// Loop through each file and concatenate its contents
+            foreach ($files as $file) {
+                $content = Storage::disk('simplesamlphp')->get($file);
+                // Concatenate the file contents
+                $allContents .= "File: $file\n";
+                $allContents .= "Content:\n";
+                $allContents .= $content;
+                $allContents .= "\n\n"; // Add a new line between files
+            }
+
+// Flash the concatenated contents to the session
+            $request->session()->flash('success', $allContents);
 
 
         } catch (Exception $e) {
