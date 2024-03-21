@@ -105,7 +105,7 @@ class ProxyController extends Controller
             // update the config: module_metarefresh.php
             // Read a file
             $content = Storage::disk('simplesamlphp')->get('module_metarefresh.php');
-            $request->session()->flash('error', $content);
+            $request->session()->flash('success', str($content));
 
 
 
