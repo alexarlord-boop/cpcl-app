@@ -157,8 +157,8 @@ class ProxyController extends Controller
     {
 
         // Read the existing config file
-        $configFile = $filePath;
-        $config = include $configFile;
+
+        $config = file_get_contents($filePath);
 
         $type = $entity->getType();
         $metadataUrl = $entity->getResourceLocation();
