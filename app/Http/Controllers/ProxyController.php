@@ -137,6 +137,24 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
+    function generateConfigSection($type, $metadataUrl) {
+        // Define the base configuration for the section
+        $configSection = [
+            'cron'         => ['hourly'],
+            'sources'      => [
+                [
+                    'src' => $metadataUrl,
+                ],
+            ],
+            'expireAfter'  => 60*60*24*4, // Maximum 4 days cache time.
+            'outputDir'    => 'metadata/' . $type,
+            'outputFormat' => 'flatfile',
+        ];
+
+        // Return the generated configuration section
+        return $configSection;
+    }
+
     private function updateMetarefreshConfigWithEntity($filePath, EntityDTO $entity) {
 
         // Read the existing config file
@@ -149,10 +167,16 @@ class ProxyController extends Controller
         // Modify the $config array based on $type and $metadataUrl
         switch ($type) {
             case EntityType::IDP:
-                $config['sets']['saml_idp']['sources'][] = ['src' => $metadataUrl];
+                if (!isset($config['sets']['saml_idp'])) {
+                    $config['sets']['saml_idp'] = [];
+                }
+                $config['sets']['saml_idp'] = array_merge($config['sets']['saml_idp'], $this->generateConfigSection($type, $metadataUrl));
                 break;
             case EntityType::SP:
-                $config['sets']['saml_sp']['sources'][] = ['src' => $metadataUrl];
+                if (!isset($config['sets']['saml_sp'])) {
+                    $config['sets']['saml_sp'] = [];
+                }
+                $config['sets']['saml_sp'] = array_merge($config['sets']['saml_idp'], $this->generateConfigSection($type, $metadataUrl));
                 break;
             case EntityType::IDPS:
                 // Handle saml_idps
