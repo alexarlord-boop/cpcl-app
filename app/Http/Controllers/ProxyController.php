@@ -192,7 +192,7 @@ class ProxyController extends Controller
         }
 
 // Write the updated config back to the file
-        file_put_contents($filePath, '<?php ' . str($config) . ';');
+        file_put_contents($filePath, '<?php ' . var_export($config, true) . ';');
 
     }
 
