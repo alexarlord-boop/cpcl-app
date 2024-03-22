@@ -119,7 +119,6 @@ class ProxyController extends Controller
             }
 
 
-
         } catch (Exception $e) {
             $request->session()->flash('error', $e->getMessage());
         }
@@ -137,31 +136,33 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    function generateConfigSection($type, $metadataUrl) {
+    function generateConfigSection($type, $metadataUrl)
+    {
         // Define the base configuration for the section
-        $configSection = [
-            'cron'         => ['hourly'],
-            'sources'      => [
+        $configSection = array(
+            'cron' => ['hourly'],
+            'sources' => [
                 [
                     'src' => $metadataUrl,
                 ],
             ],
-            'expireAfter'  => 60*60*24*4, // Maximum 4 days cache time.
-            'outputDir'    => 'metadata/' . $type,
+            'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
+            'outputDir' => 'metadata/' . $type,
             'outputFormat' => 'flatfile',
-        ];
+        );
 
         // Return the generated configuration section
         return $configSection;
     }
 
-    private function updateMetarefreshConfigWithEntity($filePath, EntityDTO $entity) {
+    private function updateMetarefreshConfigWithEntity($filePath, EntityDTO $entity)
+    {
 
         // Read the existing config file
         $configFile = $filePath;
         $config = include $configFile;
 
-        $type =  $entity->getType();
+        $type = $entity->getType();
         $metadataUrl = $entity->getResourceLocation();
 
         // Modify the $config array based on $type and $metadataUrl
@@ -170,7 +171,7 @@ class ProxyController extends Controller
                 $config['sets']['saml_idp'] = $this->generateConfigSection($type, $metadataUrl);
                 break;
             case EntityType::SP:
-                $config['sets']['saml_sp'] =  $this->generateConfigSection($type, $metadataUrl);
+                $config['sets']['saml_sp'] = $this->generateConfigSection($type, $metadataUrl);
                 break;
             case EntityType::IDPS:
                 // Handle saml_idps
@@ -186,6 +187,7 @@ class ProxyController extends Controller
         file_put_contents($configFile, '<?php return ' . var_export($config, true) . ';');
 
     }
+
     private function insertSamlToDatabase(Request $request, $result, $table)
     {
         // decoupling data into id-data pair
