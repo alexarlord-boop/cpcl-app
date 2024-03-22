@@ -158,7 +158,7 @@ class ProxyController extends Controller
 
         // Read the existing config file
 
-        $config = file_get_contents($filePath);
+        include $filePath;
 
         $type = $entity->getType();
         $metadataUrl = $entity->getResourceLocation();
@@ -192,7 +192,7 @@ class ProxyController extends Controller
         }
 
 // Write the updated config back to the file
-        file_put_contents($configFile, '<?php return ' . var_export($config, true) . ';');
+        file_put_contents($filePath, '<?php return ' . var_export($config, true) . ';');
 
     }
 
