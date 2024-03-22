@@ -167,16 +167,10 @@ class ProxyController extends Controller
         // Modify the $config array based on $type and $metadataUrl
         switch ($type) {
             case EntityType::IDP:
-                if (!isset($config['sets']['saml_idp'])) {
-                    $config['sets']['saml_idp'] = [];
-                }
-                $config['sets']['saml_idp'] = array_merge($config['sets']['saml_idp'], $this->generateConfigSection($type, $metadataUrl));
+                $config['sets']['saml_idp'] = $this->generateConfigSection($type, $metadataUrl);
                 break;
             case EntityType::SP:
-                if (!isset($config['sets']['saml_sp'])) {
-                    $config['sets']['saml_sp'] = [];
-                }
-                $config['sets']['saml_sp'] = array_merge($config['sets']['saml_idp'], $this->generateConfigSection($type, $metadataUrl));
+                $config['sets']['saml_sp'] =  $this->generateConfigSection($type, $metadataUrl);
                 break;
             case EntityType::IDPS:
                 // Handle saml_idps
