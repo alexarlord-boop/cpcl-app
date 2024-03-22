@@ -104,15 +104,15 @@ class ProxyController extends Controller
 
             // update the config: module_metarefresh.php
             // Read a file
-            $filePath = '/var/www/laravel-app/public/config/module_metarefresh.php';
+            $filePath = Constants::METAREFRESH_PATH;
 
 
             // Check if the file exists
             if (file_exists($filePath)) {
-                // Read the contents of the file
-                $fileContents = file_get_contents($filePath);
+
                 // Process the file contents...
-                $request->session()->flash('error', $fileContents);
+                $this->updateMetarefreshConfigWithEntity($filePath, $entity);
+
             } else {
                 // File does not exist
                 $request->session()->flash('error', "File does not exist at $filePath");
@@ -137,6 +137,37 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
+    private function updateMetarefreshConfigWithEntity($filePath, EntityDTO $entity) {
+
+        // Read the existing config file
+        $configFile = $filePath;
+        $config = include $configFile;
+
+        $type =  $entity->getType();
+        $metadataUrl = $entity->getResourceLocation();
+
+        // Modify the $config array based on $type and $metadataUrl
+        switch ($type) {
+            case EntityType::IDP:
+                $config['sets']['saml_idp']['sources'][] = ['src' => $metadataUrl];
+                break;
+            case EntityType::SP:
+                $config['sets']['saml_sp']['sources'][] = ['src' => $metadataUrl];
+                break;
+            case EntityType::IDPS:
+                // Handle saml_idps
+                break;
+            case EntityType::SPS:
+                // Handle saml_sps
+                break;
+            default:
+                // Handle default case
+        }
+
+// Write the updated config back to the file
+        file_put_contents($configFile, '<?php return ' . var_export($config, true) . ';');
+
+    }
     private function insertSamlToDatabase(Request $request, $result, $table)
     {
         // decoupling data into id-data pair
