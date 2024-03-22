@@ -139,7 +139,8 @@ class ProxyController extends Controller
     function generateConfigSection($type, $metadataUrl)
     {
         // Define the base configuration for the section
-        $configSection = array(
+        // Return the generated configuration section
+        return array(
             'cron' => ['hourly'],
             'sources' => [
                 [
@@ -150,9 +151,6 @@ class ProxyController extends Controller
             'outputDir' => 'metadata/' . $type,
             'outputFormat' => 'flatfile',
         );
-
-        // Return the generated configuration section
-        return $configSection;
     }
 
     private function updateMetarefreshConfigWithEntity($filePath, EntityDTO $entity)
@@ -168,7 +166,17 @@ class ProxyController extends Controller
         // Modify the $config array based on $type and $metadataUrl
         switch ($type) {
             case EntityType::IDP:
-                $config['sets']['saml_idp'] = $this->generateConfigSection($type, $metadataUrl);
+                $config['sets']['saml_idp'] = [
+                    'cron' => ['hourly'],
+                    'sources' => [
+                        [
+                            'src' => $metadataUrl,
+                        ],
+                    ],
+                    'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
+                    'outputDir' => 'metadata/' . $type,
+                    'outputFormat' => 'flatfile',
+                ];
                 break;
             case EntityType::SP:
                 $config['sets']['saml_sp'] = $this->generateConfigSection($type, $metadataUrl);
