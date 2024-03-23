@@ -166,7 +166,10 @@ class ProxyController extends Controller
         // Modify the $config array based on $type and $metadataUrl
         switch ($type) {
             case EntityType::IDP:
-                $config['sets']['saml_idp'] = [
+            case EntityType::SP:
+            case EntityType::IDPS:
+            case EntityType::SPS:
+                $config['sets'][$type] = [
                     'cron' => ['hourly'],
                     'sources' => [
                         [
@@ -178,21 +181,11 @@ class ProxyController extends Controller
                     'outputFormat' => 'flatfile',
                 ];
                 break;
-            case EntityType::SP:
-                $config['sets']['saml_sp'] = $this->generateConfigSection($type, $metadataUrl);
-                break;
-            case EntityType::IDPS:
-                // Handle saml_idps
-                break;
-            case EntityType::SPS:
-                // Handle saml_sps
-                break;
             default:
                 // Handle default case
         }
 
         $configString = var_export($config, true);
-        $configString = preg_replace('/=> \d+,/', '=>', $configString); // Remove numeric keys
 
         // Format the string for readability
         $configString = '<?php $config = ' . PHP_EOL . $configString . ';' . PHP_EOL;
