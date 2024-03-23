@@ -191,9 +191,14 @@ class ProxyController extends Controller
                 // Handle default case
         }
 
-// Write the updated config back to the file
-        file_put_contents($filePath, '<?php $config = ' . var_export($config, true) . ';');
+        $configString = var_export($config, true);
+        $configString = preg_replace('/=> \d+,/', '=>', $configString); // Remove numeric keys
 
+        // Format the string for readability
+        $configString = '<?php $config = ' . PHP_EOL . $configString . ';' . PHP_EOL;
+
+        // Write the formatted string to the file
+        file_put_contents($filePath, $configString);
     }
 
     private function insertSamlToDatabase(Request $request, $result, $table)
