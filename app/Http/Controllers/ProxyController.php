@@ -196,7 +196,7 @@ class ProxyController extends Controller
         );
     }
 
-    private function updateMetarefreshConfigWithEntities($filePath, EntityDTO $entities)
+    private function updateMetarefreshConfigWithEntities($filePath, $entities)
     {
 
         // Read the existing config file
