@@ -96,7 +96,7 @@ class ProxyController extends Controller
         Cache::put('rules', $rules, Constants::ENTITY_CACHE_LIVE);
     }
 
-    public function processSamlEntity(Request $request)
+    public function processSamlEntity(Request $request): \Illuminate\Http\RedirectResponse
     {
 
         try {
@@ -127,23 +127,15 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    public function processSamlEntities(Request $request)
+    public function processSamlEntities(Request $request): \Illuminate\Http\RedirectResponse
     {
         try {
             $entities = unserialize(json_decode($request->input('samlEntities')));
             $filePath = Constants::METAREFRESH_PATH;
-
-//            $request->session()->flash('success', print_r($entities, true));
-
-            // Check if the file exists
             if (file_exists($filePath)) {
-
-                // Process the file contents
                 $this->updateMetarefreshConfigWithEntities($filePath, $entities);
                 $request->session()->flash('success', "Metadata config is updated!");
-
             } else {
-                // File does not exist
                 $request->session()->flash('error', "File does not exist at $filePath");
             }
         } catch (Exception $e) {
@@ -153,20 +145,28 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    public function processOidcEntity(Request $request)
+    public function processOidcEntity(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $entity = unserialize(json_decode($request->input('oidcEntity')));
-
-        $this->insertOidcToDatabase($request, $entity);
+        try {
+            $entity = unserialize(json_decode($request->input('oidcEntity')));
+            $this->insertOidcToDatabase($request, $entity);
+        } catch (Exception $e) {
+            $request->session()->flash('error', $e->getMessage());
+        }
 
         return redirect()->route('proxy.index');
     }
 
-    public function processOidcEntities(Request $request)
+    public function processOidcEntities(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $entities = unserialize(json_decode($request->input('oidcEntities')));
-        foreach ($entities as $entity) {
-            $this->insertOidcToDatabase($request, $entity);
+        try {
+            $entities = unserialize(json_decode($request->input('oidcEntities')));
+            foreach ($entities as $entity) {
+                $this->insertOidcToDatabase($request, $entity);
+            }
+            $request->session()->flash('success', 'Oidc Registry is updated!');
+        } catch (Exception $e) {
+            $request->session()->flash('error', $e->getMessage());
         }
 
         return redirect()->route('proxy.index');
@@ -270,8 +270,6 @@ class ProxyController extends Controller
                     'backchannel_logout_uri' => NULL,
                 ]
             );
-
-            $request->session()->flash('success', 'Inserted or updated ' . $entity->getName() . ' successfully.');
         } catch (\Exception $e) {
             Log::error('DB failure: ' . $e->getMessage());
             $request->session()->flash('error', 'DB failure: ' . $e->getMessage());
