@@ -143,9 +143,9 @@ class ProxyController extends Controller
             if (file_exists($filePath)) {
 
                 // Process the file contents...
-                foreach ($entities as $ent) {
-                    $this->updateMetarefreshConfigWithEntity($filePath, $ent);
-                }
+
+                $this->updateMetarefreshConfigWithEntities($filePath, $entities);
+
 
             } else {
                 // File does not exist
@@ -196,36 +196,38 @@ class ProxyController extends Controller
         );
     }
 
-    private function updateMetarefreshConfigWithEntity($filePath, EntityDTO $entity)
+    private function updateMetarefreshConfigWithEntities($filePath, EntityDTO $entities)
     {
 
         // Read the existing config file
 
         include $filePath;
 
-        $type = $entity->getType();
-        $metadataUrl = $entity->getResourceLocation();
+        foreach ($entities as $entity) {
+            $type = $entity->getType();
+            $metadataUrl = $entity->getResourceLocation();
 
-        // Modify the $config array based on $type and $metadataUrl
-        switch ($type) {
-            case EntityType::IDP:
-            case EntityType::SP:
-            case EntityType::IDPS:
-            case EntityType::SPS:
-                $config['sets'][$type] = [
-                    'cron' => ['hourly'],
-                    'sources' => [
-                        [
-                            'src' => $metadataUrl,
+            // Modify the $config array based on $type and $metadataUrl
+            switch ($type) {
+                case EntityType::IDP:
+                case EntityType::SP:
+                case EntityType::IDPS:
+                case EntityType::SPS:
+                    $config['sets'][$type] = [
+                        'cron' => ['hourly'],
+                        'sources' => [
+                            [
+                                'src' => $metadataUrl,
+                            ],
                         ],
-                    ],
-                    'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
-                    'outputDir' => 'metadata/' . $type,
-                    'outputFormat' => 'flatfile',
-                ];
-                break;
-            default:
-                // Handle default case
+                        'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
+                        'outputDir' => 'metadata/' . $type,
+                        'outputFormat' => 'flatfile',
+                    ];
+                    break;
+                default:
+                    // Handle default case
+            }
         }
 
         $configString = var_export($config, true);

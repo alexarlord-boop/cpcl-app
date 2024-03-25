@@ -31,7 +31,7 @@
                         ?>
                     </select>
                     <div class="input-group-append">
-                        <button type="submit" class="input-group-append btn btn-outline-primary">Get from uploads/
+                        <button type="submit" class="input-group-append btn btn-outline-primary">Get from server
                         </button>
                     </div>
                     <ul class="nav nav-bar ml-3">
