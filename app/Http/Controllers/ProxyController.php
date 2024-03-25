@@ -215,25 +215,6 @@ class ProxyController extends Controller
         file_put_contents($filePath, $configString);
     }
 
-    private function insertSamlToDatabase(Request $request, $result, $table)
-    {
-        // decoupling data into id-data pair
-        $firstKeyValuePair = reset($result);
-        $entity_id = key($result);
-        $entity_data = json_encode($firstKeyValuePair);
-
-        try {
-            DB::table($table)->updateOrInsert(
-                ['entity_id' => $entity_id], // Key to check if the record exists
-                ['entity_data' => $entity_data] // Data to insert or update
-            );
-            $request->session()->flash('success', 'Inserted or updated ' . $entity_id . ' successfully.');
-        } catch (Exception $e) {
-            Log::error("DB failure. Entity ID: $entity_id." . $e->getMessage());
-            $request->session()->flash('error', "DB failure. " . $e->getMessage());
-        }
-    }
-
     private function insertOidcToDatabase(Request $request, EntityDTO $entity)
     {
         try {
