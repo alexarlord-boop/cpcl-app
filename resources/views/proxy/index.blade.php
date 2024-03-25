@@ -42,7 +42,7 @@
                 @csrf
                 <div class="input-group input-group mb-3">
                     <div class="input-group-prepend">
-                        <button type="submit" class="input-group-append btn btn-outline-success">⬆upload</button>
+                        <button type="submit" class="input-group-append btn btn-outline-primary">⬆upload</button>
                     </div>
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" id="file" name="file" accept=".yaml" required>

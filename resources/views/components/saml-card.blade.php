@@ -19,7 +19,7 @@
 
             <div class="btn-group" role="group" aria-label="Card Actions">
 {{--                <x-card-edit-btn :id="$id" :entity="$entity" protocol="saml"/>--}}
-                <x-card-process-btn :id="$id" :entity="$entity" protocol="saml"/>
+{{--                <x-card-process-btn :id="$id" :entity="$entity" protocol="saml"/>--}}
             </div>
         </div>
         <div class="">

@@ -14,7 +14,7 @@
 
             <div class="btn-group" role="group" aria-label="Card Actions">
                 {{--                <x-card-edit-btn :id="$id" :entity="$entity"/>--}}
-                <x-card-process-btn :id="$id" :entity="$entity" protocol="oidc"/>
+{{--                <x-card-process-btn :id="$id" :entity="$entity" protocol="oidc"/>--}}
             </div>
 
         </div>
