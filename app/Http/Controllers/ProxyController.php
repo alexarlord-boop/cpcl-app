@@ -164,9 +164,10 @@ class ProxyController extends Controller
 
     public function processOidcEntities(Request $request)
     {
-//        $entity = unserialize(json_decode($request->input('oidcEntity')));
-//
-//        $this->insertOidcToDatabase($request, $entity);
+        $entities = unserialize(json_decode($request->input('oidcEntities')));
+        foreach ($entities as $entity) {
+            $this->insertOidcToDatabase($request, $entity);
+        }
 
         return redirect()->route('proxy.index');
     }
