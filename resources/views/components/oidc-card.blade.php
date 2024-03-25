@@ -9,7 +9,7 @@
                 <span class="p">
                 {{--            <span class="badge badge-secondary m-0">{{ $entity->getProtocol() }}</span>--}}
                     {{--                <span class="badge badge-secondary m-0">{{ $entity->getSection() }}</span>--}}
-                <span class="badge badge-secondary m-0">{{ $entity->getType() }}</span></span>
+                <span class="badge badge-secondary m-0">{{ $entity->getSection() }}</span></span>
             </h4>
 
             <div class="btn-group" role="group" aria-label="Card Actions">

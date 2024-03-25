@@ -62,18 +62,28 @@
             @endif
 
             @php
-                $inSection = array_filter($entities, function ($dto) {
-                    return $dto->getSection() === 'in';
+//                $inSection = array_filter($entities, function ($dto) {
+//                    return $dto->getSection() === 'in';
+//                });
+//                $outSection = array_filter($entities, function ($dto) {
+//                    return $dto->getSection() === 'out';
+//                });
+
+                $samlSection = array_filter($entities, function ($dto) {
+                    return $dto->getProtocol() === 'saml';
                 });
-                $outSection = array_filter($entities, function ($dto) {
-                    return $dto->getSection() === 'out';
+
+                 $oidcSection = array_filter($entities, function ($dto) {
+                    return $dto->getProtocol() === 'oidc';
                 });
+
                 $rulesSection = $rules;
                 // parse each section into special DTOs
 
             @endphp
 
-            <x-config-sections :inSection="$inSection" :outSection="$outSection" :rulesSection="$rulesSection"/>
+{{--            <x-config-sections-bydirection :inSection="$inSection" :outSection="$outSection" :rulesSection="$rulesSection"/>--}}
+            <x-config-sections-byprotocol :samlSection="$samlSection" :oidcSection="$oidcSection" :rulesSection="$rulesSection"/>
 
         @endif
 

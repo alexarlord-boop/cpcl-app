@@ -1,11 +1,14 @@
 {{--  SAML ENTITIES  --}}
 
-@php
-    $samlEntries = array_filter($sectionEntries, function ($entry) {
-        return $entry->getProtocol() == \App\Enums\EntityProtocol::SAML;
-    });
-@endphp
+@if(isset($sectionEntries) && count($sectionEntries) > 0)
 
-@foreach($samlEntries as $saml)
-    <x-saml-card :entity="$saml"/>
-@endforeach
+    {{--    <x-saml-entries :sectionEntries="$sectionEntries"/>--}}
+    {{--    <x-oidc-entries :sectionEntries="$sectionEntries"/>--}}
+
+    @foreach($sectionEntries as $e)
+        <x-saml-card :entity="$e"/>
+    @endforeach
+
+@else
+    <p>Nothing to show</p>
+@endif
