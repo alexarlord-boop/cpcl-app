@@ -172,23 +172,6 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    function generateConfigSection($type, $metadataUrl)
-    {
-        // Define the base configuration for the section
-        // Return the generated configuration section
-        return array(
-            'cron' => ['hourly'],
-            'sources' => [
-                [
-                    'src' => $metadataUrl,
-                ],
-            ],
-            'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
-            'outputDir' => 'metadata/' . $type,
-            'outputFormat' => 'flatfile',
-        );
-    }
-
     private function updateMetarefreshConfigWithEntities($filePath, $entities)
     {
 
@@ -275,56 +258,6 @@ class ProxyController extends Controller
             $request->session()->flash('error', 'DB failure: ' . $e->getMessage());
         }
     }
-
-    /**
-     * @throws Exception
-     */
-    private function getXmlMetadata($request, $xmlUrl): string|null
-    {
-        try {
-            $ch = curl_init($xmlUrl);
-            // Set cURL options
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            // Ignore SSL verification (use with caution)
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            $response = curl_exec($ch);
-            if (curl_errno($ch)) {
-                // Handle the error
-                $request->session()->flash('error', curl_error($ch));
-                curl_close($ch);
-                return null;
-            } else {
-//            $this->storeMetadataInFile($response, $filePath);
-                curl_close($ch);
-                return $response;
-            }
-        } catch (Exception $e) {
-            throw new Exception(message: $e->getMessage());
-        }
-    }
-
-    private function storeMetadataInFile($response, $filePath)
-    {
-        $directory = dirname($filePath);
-        if (!is_dir($directory)) {
-            mkdir($directory, 0777, true);
-        }
-        file_put_contents($filePath, $response, FILE_APPEND | LOCK_EX);
-    }
-
-    private function parseXmlToPhpArray($request, string $srcXml, $set): ?array
-    {
-        try {
-            return MetaDataStorageSource::getSource(['type' => 'xml', 'xml' => $srcXml])
-                ->getMetadataSet($set);
-        } catch (\Exception $e) {
-            Log::error("Error parsing XML file: " . $e->getMessage() . " " . $e->getCode());
-            $request->session()->flash("error", "Error parsing XML file: " . $e->getMessage() . " " . $e->getCode());
-            return null;
-        }
-    }
-
 
     public function clearCache()
     {
