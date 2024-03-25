@@ -26,8 +26,9 @@ Route::get('/test-basic', function () {
 Route::get('/test-db', [DatabaseTestController::class, 'testDatabaseConnection']);
 
 Route::post('/process-saml', [ProxyController::class, 'processSamlEntity'])->name('process.saml');
-Route::post('/edit-saml', [ProxyController::class, 'editSamlEntity'])->name('edit.saml');
+Route::post('/process-saml-all', [ProxyController::class, 'processSamlEntities'])->name('process.saml.all');
 Route::post('/process-oidc', [ProxyController::class, 'processOidcEntity'])->name('process.oidc');
+Route::post('/process-oidc-all', [ProxyController::class, 'processOidcEntities'])->name('process.oidc.all');
 Route::get('/clear-cache', [ProxyController::class, 'clearCache'])->name('clear.cache');
 Route::get('/check-all', [ProxyController::class, 'checkAll'])->name('check.all');
 Route::delete('/delete-entry/{protocol}/{type}/{id}', [ProxyController::class,'deleteEntry'])->name('deleteEntry');

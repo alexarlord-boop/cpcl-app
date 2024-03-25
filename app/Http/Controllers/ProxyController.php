@@ -127,11 +127,54 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
+    public function processSamlEntities(Request $request)
+    {
+        try {
+            $entities = unserialize(json_decode($request->input('samlEntities')));
+
+            // update the config: module_metarefresh.php
+            // Read a file
+            $filePath = Constants::METAREFRESH_PATH;
+
+
+            $request->session()->flash('success', print_r($entities, true));
+
+            // Check if the file exists
+            if (file_exists($filePath)) {
+
+                // Process the file contents...
+                foreach ($entities as $ent) {
+                    $this->updateMetarefreshConfigWithEntity($filePath, $ent);
+                }
+
+            } else {
+                // File does not exist
+                $request->session()->flash('error', "File does not exist at $filePath");
+            }
+
+
+        } catch (Exception $e) {
+            $request->session()->flash('error', $e->getMessage());
+        }
+
+        // Redirect back with the notification
+        return redirect()->route('proxy.index');
+    }
+
     public function processOidcEntity(Request $request)
     {
         $entity = unserialize(json_decode($request->input('oidcEntity')));
 
         $this->insertOidcToDatabase($request, $entity);
+
+        return redirect()->route('proxy.index');
+    }
+
+    public function processOidcEntities(Request $request)
+    {
+//        $entity = unserialize(json_decode($request->input('oidcEntity')));
+//
+//        $this->insertOidcToDatabase($request, $entity);
 
         return redirect()->route('proxy.index');
     }
