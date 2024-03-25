@@ -33,8 +33,6 @@ class ProxyController extends Controller
     public function parseAndShow(Request $request)
     {
 
-        //$uploadDir = 'uploads/';
-
         if ($request->isMethod('post')) {
             $file = $request->file('file');
 

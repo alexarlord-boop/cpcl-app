@@ -34,20 +34,23 @@
                         <button type="submit" class="input-group-append btn btn-outline-primary">Get from server
                         </button>
                     </div>
-                    <ul class="nav nav-bar ml-3">
-                        <li class="btn-group ">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-gear text-primary "></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="{{route('clear.cache')}}">
-                                    Close</a>
-                                <a class="dropdown-item" href="#">Download</a>
-                                <a class="dropdown-item" href="#">Delete</a>
-                            </div>
-                        </li>
-                    </ul>
+                    @if(session()->has('pathFileToParse'))
+                        <ul class="nav nav-bar ml-3">
+                            <li class="btn-group ">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                   data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-gear text-primary "></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="{{route('clear.cache')}}">
+                                        Close</a>
+                                    <a class="dropdown-item" href="#">Download</a>
+                                    <a class="dropdown-item" href="#">Delete</a>
+                                </div>
+                            </li>
+                        </ul>
+                    @endif
                 </div>
             </form>
 
@@ -76,28 +79,29 @@
             @endif
 
             @php
-//                $inSection = array_filter($entities, function ($dto) {
-//                    return $dto->getSection() === 'in';
-//                });
-//                $outSection = array_filter($entities, function ($dto) {
-//                    return $dto->getSection() === 'out';
-//                });
+                //                $inSection = array_filter($entities, function ($dto) {
+                //                    return $dto->getSection() === 'in';
+                //                });
+                //                $outSection = array_filter($entities, function ($dto) {
+                //                    return $dto->getSection() === 'out';
+                //                });
 
-                $samlSection = array_filter($entities, function ($dto) {
-                    return $dto->getProtocol() === 'saml';
-                });
+                                $samlSection = array_filter($entities, function ($dto) {
+                                    return $dto->getProtocol() === 'saml';
+                                });
 
-                 $oidcSection = array_filter($entities, function ($dto) {
-                    return $dto->getProtocol() === 'oidc';
-                });
+                                 $oidcSection = array_filter($entities, function ($dto) {
+                                    return $dto->getProtocol() === 'oidc';
+                                });
 
-                $rulesSection = $rules;
-                // parse each section into special DTOs
+                                $rulesSection = $rules;
+                                // parse each section into special DTOs
 
             @endphp
 
-{{--            <x-config-sections-bydirection :inSection="$inSection" :outSection="$outSection" :rulesSection="$rulesSection"/>--}}
-            <x-config-sections-byprotocol :samlSection="$samlSection" :oidcSection="$oidcSection" :rulesSection="$rulesSection"/>
+            {{--            <x-config-sections-bydirection :inSection="$inSection" :outSection="$outSection" :rulesSection="$rulesSection"/>--}}
+            <x-config-sections-byprotocol :samlSection="$samlSection" :oidcSection="$oidcSection"
+                                          :rulesSection="$rulesSection"/>
 
         @endif
 
