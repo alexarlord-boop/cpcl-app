@@ -195,7 +195,7 @@ class ProxyController extends Controller
                             ],
                         ],
                         'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
-                        'outputDir' => 'metadata/' . $type,
+                        'outputDir' => Constants::OUTPUT_DIR . $type,
                         'outputFormat' => 'flatfile',
                     ];
                     break;
