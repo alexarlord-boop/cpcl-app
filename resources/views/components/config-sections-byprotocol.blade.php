@@ -19,17 +19,18 @@
         <!-- SAML Tab -->
         <div class="tab-pane fade show active" id="saml" role="tabpanel" aria-labelledby="saml-tab">
             <x-saml-entries :sectionEntries="$samlSection"/>
-        </div></div>
+        </div>
 
-    <!-- OIDC Tab -->
-    <div class="tab-pane fade" id="oidc" role="tabpanel" aria-labelledby="oidc-tab">
-        <x-oidc-entries :sectionEntries="$oidcSection"/>
-    </div></div>
+        <!-- OIDC Tab -->
+        <div class="tab-pane fade" id="oidc" role="tabpanel" aria-labelledby="oidc-tab">
+            <x-oidc-entries :sectionEntries="$oidcSection"/>
+        </div>
 
-    <!-- Rules Tab -->
-    <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
-        <x-rules-entries :sectionEntries="$rulesSection"/>
+
+        <!-- Rules Tab -->
+        <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
+            <x-rules-entries :sectionEntries="$rulesSection"/>
+        </div>
     </div>
-</div>
 </div>
 
