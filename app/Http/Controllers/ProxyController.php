@@ -11,6 +11,7 @@ use App\Services\EntityDTO;
 use App\Services\IOUtils;
 use App\Services\Parser;
 use Exception;
+use FilesystemIterator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Log;
 
 //use SimpleSAML\Configuration;
 use Illuminate\Support\Facades\Storage;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use SimpleSAML\Metadata\MetaDataStorageSource;
 use SimpleXMLElement;
 
@@ -174,35 +177,86 @@ class ProxyController extends Controller
     {
 
         // Read the existing config file
-
         include $filePath;
+
+        // Array to track types for which configurations are set
+        $configuredTypes = [];
 
         foreach ($entities as $entity) {
             $type = $entity->getType();
             $metadataUrl = $entity->getResourceLocation();
 
-            // Modify the $config array based on $type and $metadataUrl
-            switch ($type) {
-                case EntityType::IDP:
-                case EntityType::SP:
-                case EntityType::IDPS:
-                case EntityType::SPS:
-                    $config['sets'][$type] = [
-                        'cron' => ['hourly'],
-                        'sources' => [
-                            [
-                                'src' => $metadataUrl,
-                            ],
+            // Check if entity exists in config, and if so, update URL
+            if (isset($config['sets'][$type])) {
+                $config['sets'][$type]['sources'][0]['src'] = $metadataUrl;
+            } else {
+                // If entity doesn't exist in config, create a new entry
+                $config['sets'][$type] = [
+                    'cron' => ['hourly'],
+                    'sources' => [
+                        [
+                            'src' => $metadataUrl,
                         ],
-                        'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
-                        'outputDir' => Constants::OUTPUT_DIR . $type,
-                        'outputFormat' => 'flatfile',
-                    ];
-                    break;
-                default:
-                    // Handle default case
+                    ],
+                    'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
+                    'outputDir' => Constants::OUTPUT_DIR . $type,
+                    'outputFormat' => 'flatfile',
+                ];
+            }
+            // Track configured types
+            $configuredTypes[] = $type;
+        }
+
+        // Remove configurations and directories for types not configured
+        foreach ($config['sets'] as $setType => $setConfig) {
+            if (!in_array($setType, $configuredTypes)) {
+                $outputDir = $setConfig['outputDir'];
+                // Check if the directory exists before attempting to delete
+                if (is_dir($outputDir)) {
+                    // Recursive directory deletion
+                    $files = new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($outputDir, FilesystemIterator::SKIP_DOTS),
+                        RecursiveIteratorIterator::CHILD_FIRST
+                    );
+                    foreach ($files as $fileInfo) {
+                        $action = ($fileInfo->isDir() ? 'rmdir' : 'unlink');
+                        $action($fileInfo->getRealPath());
+                    }
+                    rmdir($outputDir); // Remove the main directory
+                }
+                unset($config['sets'][$setType]); // Remove configuration for the type
             }
         }
+
+//        foreach ($entities as $entity) {
+//            $type = $entity->getType();
+//            $metadataUrl = $entity->getResourceLocation();
+//
+//            // Modify the $config array based on $type and $metadataUrl
+//            // if no entity from current $config appeared during loop -> delete dir
+//            // if entity in $entities only -> create entry in $config
+//            // if in both -> update url
+//            switch ($type) {
+//                case EntityType::IDP:
+//                case EntityType::SP:
+//                case EntityType::IDPS:
+//                case EntityType::SPS:
+//                    $config['sets'][$type] = [
+//                        'cron' => ['hourly'],
+//                        'sources' => [
+//                            [
+//                                'src' => $metadataUrl,
+//                            ],
+//                        ],
+//                        'expireAfter' => 60 * 60 * 24 * 4, // Maximum 4 days cache time.
+//                        'outputDir' => Constants::OUTPUT_DIR . $type,
+//                        'outputFormat' => 'flatfile',
+//                    ];
+//                    break;
+//                default:
+//                    // Handle default case
+//            }
+//        }
 
         $configString = var_export($config, true);
 
