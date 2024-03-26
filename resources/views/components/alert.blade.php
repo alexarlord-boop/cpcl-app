@@ -11,6 +11,7 @@
          'info' => 'exclamation-triangle'
     )
 @endphp
+<div class="toast-container">
 @foreach($statusMapping as $status => $tag)
     @if(session($status) !== null)
         <div class="position-fixed p-3" style="z-index: 10000; top: 0; right: 0;">
@@ -29,4 +30,5 @@
         </div>
     @endif
 @endforeach
+</div>
 
