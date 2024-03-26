@@ -19,13 +19,11 @@
         <!-- SAML Tab -->
         <div class="tab-pane fade show active" id="saml" role="tabpanel" aria-labelledby="saml-tab">
             <x-saml-entries :sectionEntries="$samlSection"/>
-            <x-btn-process-all :entities="$samlSection" protocol="saml"/>
         </div></div>
 
     <!-- OIDC Tab -->
     <div class="tab-pane fade" id="oidc" role="tabpanel" aria-labelledby="oidc-tab">
         <x-oidc-entries :sectionEntries="$oidcSection"/>
-        <x-btn-process-all :entities="$oidcSection" protocol="oidc"/>
     </div></div>
 
     <!-- Rules Tab -->

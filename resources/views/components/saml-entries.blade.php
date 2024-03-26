@@ -8,6 +8,7 @@
     @foreach($sectionEntries as $e)
         <x-saml-card :entity="$e"/>
     @endforeach
+    <x-btn-process-all :entities="$sectionEntries" protocol="saml"/>
 
 @else
     <p>Nothing to show</p>

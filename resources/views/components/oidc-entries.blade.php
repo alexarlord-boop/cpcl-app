@@ -8,6 +8,8 @@
         <x-oidc-card :entity="$e"/>
     @endforeach
 
+    <x-btn-process-all :entities="$sectionEntries" protocol="oidc"/>
+
 @else
     <p>Nothing to show</p>
 @endif
