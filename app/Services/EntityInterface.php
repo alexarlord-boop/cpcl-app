@@ -16,7 +16,7 @@ interface EntityInterface
 
     public function getEntityId(): ?string;
 
-    public function getDynamicRegistration(): ?string;
+//    public function getDynamicRegistration(): ?string;
 
     public function getClientSecret(): ?string;
 }

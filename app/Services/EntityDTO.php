@@ -11,8 +11,9 @@ class EntityDTO implements EntityInterface
     private string $description;
     private string $resource_location; // idp: metadata_url	op: discovery_url	rp: redirect_uri
     private ?string $entityid; // idp, sp: entityID or rp: client_id | nullable
-    private ?string $dynamic_registration; // only in RP | nullable
+//    private ?string $dynamic_registration; // only in RP | nullable
     private ?string $client_secret; // only in RP | nullable
+    private ?string $scopes;
 
     public function __construct(
         string $section,
@@ -22,8 +23,9 @@ class EntityDTO implements EntityInterface
         string  $description,
         string  $resource_location,
         ?string $entityid = null,
-        ?string $dynamic_registration = null,
-        ?string $client_secret = null
+//        ?string $dynamic_registration = null,
+        ?string $client_secret = null,
+        ?string $scopes = null,
     )
     {
         $this->section = $section;
@@ -33,8 +35,9 @@ class EntityDTO implements EntityInterface
         $this->description = $description;
         $this->resource_location = $resource_location;
         $this->entityid = $entityid;
-        $this->dynamic_registration = $dynamic_registration;
+//        $this->dynamic_registration = $dynamic_registration;
         $this->client_secret = $client_secret;
+        $this->scopes = $scopes;
     }
 
 
@@ -58,9 +61,14 @@ class EntityDTO implements EntityInterface
         return $this->resource_location;
     }
 
-    public function getDynamicRegistration(): ?string
+//    public function getDynamicRegistration(): ?string
+//    {
+//        return $this->dynamic_registration;
+//    }
+
+    public function getScopes(): ?string
     {
-        return $this->dynamic_registration;
+        return $this->scopes;
     }
 
     public function getClientSecret(): ?string
@@ -87,16 +95,4 @@ class EntityDTO implements EntityInterface
         $this->$section = $section;
     }
 
-//    public function __toString(): string
-//    {
-//        $representation = "Type: {$this->type}, ";
-//        $representation .= "Name: {$this->name}, ";
-//        $representation .= "Description: {$this->description}, ";
-//        $representation .= "Resource Location: {$this->resource_location}, ";
-//        $representation .= "Entity ID: {$this->entityid}, ";
-//        $representation .= "Dynamic Registration: {$this->dynamic_registration}, ";
-//        $representation .= "Client Secret: {$this->client_secret}";
-//
-//        return $representation;
-//    }
 }

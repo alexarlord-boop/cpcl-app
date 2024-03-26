@@ -32,7 +32,7 @@ class EntityFactory
             $data['metadata_url'],
             $data['entityid'],
             null,
-            null
+            null,
         );
     }
 
@@ -106,8 +106,8 @@ class EntityFactory
             $data['description'],
             $data['redirect_uri'],
             $data["client_id"],
-            $data["dynamic_registration"],
-            $data["client_secret"]
+            $data["client_secret"],
+            '["openid","email","private"]',
         );
     }
 }

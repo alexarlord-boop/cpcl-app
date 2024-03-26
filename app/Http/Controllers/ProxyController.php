@@ -224,7 +224,7 @@ class ProxyController extends Controller
                     'description' => $entity->getDescription(),
                     'auth_source' => 'default-sp',
                     'redirect_uri' => json_encode([$entity->getResourceLocation()]),
-                    'scopes' => '["openid","email","private"]',
+                    'scopes' => $entity->getScopes(),
                     'is_enabled' => 1,
                     'is_confidential' => 1,
                     'owner' => NULL,

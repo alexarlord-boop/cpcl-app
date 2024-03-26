@@ -54,10 +54,10 @@
                                 <th scope="row">Client Secret:</th>
                                 <td class="border-left" colspan="3">{{ $entity->getClientSecret() }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">Dynamic Registration:</th>
-                                <td class="border-left">{{ $entity->getDynamicRegistration() ? 'Yes' : 'No' }}</td>
-                            </tr>
+{{--                            <tr>--}}
+{{--                                <th scope="row">Dynamic Registration:</th>--}}
+{{--                                <td class="border-left">{{ $entity->getDynamicRegistration() ? 'Yes' : 'No' }}</td>--}}
+{{--                            </tr>--}}
 
                             </tbody>
                         </table>
