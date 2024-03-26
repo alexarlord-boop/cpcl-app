@@ -222,12 +222,7 @@ class ProxyController extends Controller
                         $action = ($fileInfo->isDir() ? 'rmdir' : 'unlink');
                         $action($fileInfo->getRealPath());
                     }
-                    if (rmdir($outputDir)) // Remove the main directory
-                    {
-                        $request->session()->flash('info', "Deleted $outputDir");
-                    } else {
-                        $request->session()->flash('error', "Can't delete $outputDir");
-                    }
+                    rmdir($outputDir); // Remove the main directory
 
                 }
                 unset($config['sets'][$setType]); // Remove configuration for the type
