@@ -134,7 +134,7 @@ class ProxyController extends Controller
             $entities = unserialize(json_decode($request->input('samlEntities')));
             $filePath = Constants::METAREFRESH_PATH;
             if (file_exists($filePath)) {
-                $this->updateMetarefreshConfigWithEntities($filePath, $entities);
+                $this->updateMetarefreshConfigWithEntities($request, $filePath, $entities);
                 $request->session()->flash('success', "Metadata config is updated!");
             } else {
                 $request->session()->flash('error', "File does not exist at $filePath");
@@ -173,7 +173,7 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    private function updateMetarefreshConfigWithEntities($filePath, $entities)
+    private function updateMetarefreshConfigWithEntities($request, $filePath, $entities)
     {
 
         // Read the existing config file
@@ -222,7 +222,13 @@ class ProxyController extends Controller
                         $action = ($fileInfo->isDir() ? 'rmdir' : 'unlink');
                         $action($fileInfo->getRealPath());
                     }
-                    rmdir($outputDir); // Remove the main directory
+                    if (rmdir($outputDir)) // Remove the main directory
+                    {
+                        $request->session()->flash('info', "Deleted $outputDir");
+                    } else {
+                        $request->session()->flash('error', "Can't delete $outputDir");
+                    }
+
                 }
                 unset($config['sets'][$setType]); // Remove configuration for the type
             }

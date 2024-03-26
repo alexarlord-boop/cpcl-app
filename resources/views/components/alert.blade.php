@@ -1,12 +1,14 @@
 @php
     $statusMapping = array(
         'success' => 'success',
-        'error' => 'danger'
+        'error' => 'danger',
+        'info' => 'warning'
     );
 
     $iconMapping = array(
         'success' => 'check-circle',
-        'error' => 'exclamation-triangle'
+        'error' => 'exclamation-triangle',
+         'info' => 'exclamation-triangle'
     )
 @endphp
 @foreach($statusMapping as $status => $tag)
