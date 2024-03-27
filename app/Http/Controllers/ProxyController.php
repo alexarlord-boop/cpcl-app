@@ -87,7 +87,6 @@ class ProxyController extends Controller
         $rules = Cache::get('rules');
         $fileName = session('uploaded_file');
         $activeTab = $this->activeTab;
-        print_r($activeTab);
         return view('proxy.index', compact('entities', 'rules', 'fileName', 'activeTab'));
     }
 
