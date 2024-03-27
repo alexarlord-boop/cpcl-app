@@ -72,11 +72,6 @@
 
         <!-- ... Config file content divided in sections ... -->
         @if(isset($entities))
-            @if(isset($fileName))
-                <div class="mt-2">
-
-                </div>
-            @endif
 
             @php
                 //                $inSection = array_filter($entities, function ($dto) {
@@ -86,21 +81,27 @@
                 //                    return $dto->getSection() === 'out';
                 //                });
 
-                                $samlSection = array_filter($entities, function ($dto) {
-                                    return $dto->getProtocol() === 'saml';
-                                });
+                $samlSection = array_filter($entities, function ($dto) {
+                    return $dto->getProtocol() === 'saml';
+                });
 
-                                 $oidcSection = array_filter($entities, function ($dto) {
-                                    return $dto->getProtocol() === 'oidc';
-                                });
+                 $oidcSection = array_filter($entities, function ($dto) {
+                    return $dto->getProtocol() === 'oidc';
+                });
 
-                                $rulesSection = $rules;
-                                // parse each section into special DTOs
+                $rulesSection = $rules;
+                // parse each section into special DTOs
+
+
+                if (!isset($activeTab)) {
+                    $activeTab = 'saml';
+                }
 
             @endphp
 
             {{--            <x-config-sections-bydirection :inSection="$inSection" :outSection="$outSection" :rulesSection="$rulesSection"/>--}}
-            <x-config-sections-byprotocol :samlSection="$samlSection" :oidcSection="$oidcSection"
+            <x-config-sections-byprotocol :activeTab="$activeTab" :samlSection="$samlSection"
+                                          :oidcSection="$oidcSection"
                                           :rulesSection="$rulesSection"/>
 
         @endif

@@ -27,9 +27,11 @@ use SimpleXMLElement;
 
 class ProxyController extends Controller
 {
+    protected string $activeTab = 'saml';
+
     public function index()
     {
-        session_start();
+//        session_start();
         return $this->show();
     }
 
@@ -79,12 +81,14 @@ class ProxyController extends Controller
         $this->show();
     }
 
-    public function show()
+    public function show(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $entities = Cache::get('entities');
         $rules = Cache::get('rules');
         $fileName = session('uploaded_file');
-        return view('proxy.index', compact('entities', 'rules', 'fileName'));
+        $activeTab = $this->activeTab;
+        print_r($activeTab);
+        return view('proxy.index', compact('entities', 'rules', 'fileName', 'activeTab'));
     }
 
     private function getEntitiesFromYaml($fileContent)
@@ -128,7 +132,7 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    public function processSamlEntities(Request $request): \Illuminate\Http\RedirectResponse
+    public function processSamlEntities(Request $request)
     {
         try {
             $entities = unserialize(json_decode($request->input('samlEntities')));
@@ -136,14 +140,16 @@ class ProxyController extends Controller
             if (file_exists($filePath)) {
                 $this->updateMetarefreshConfigWithEntities($request, $filePath, $entities);
                 $request->session()->flash('success', "Metadata config is updated!");
+                $this->activeTab = 'oidc';
             } else {
                 $request->session()->flash('error', "File does not exist at $filePath");
+                $this->activeTab = 'saml';
             }
         } catch (Exception $e) {
             $request->session()->flash('error', $e->getMessage());
         }
 
-        return redirect()->route('proxy.index');
+        return $this->show();
     }
 
     public function processOidcEntity(Request $request): \Illuminate\Http\RedirectResponse
@@ -158,19 +164,18 @@ class ProxyController extends Controller
         return redirect()->route('proxy.index');
     }
 
-    public function processOidcEntities(Request $request): \Illuminate\Http\RedirectResponse
+    public function processOidcEntities(Request $request)
     {
         try {
             $entities = unserialize(json_decode($request->input('oidcEntities')));
-            foreach ($entities as $entity) {
-                $this->insertOidcToDatabase($request, $entity);
-            }
+            $this->insertOidcToDatabase($request, $entities);
             $request->session()->flash('success', 'Oidc Registry is updated!');
         } catch (Exception $e) {
             $request->session()->flash('error', $e->getMessage());
+            $this->activeTab = 'oidc';
         }
 
-        return redirect()->route('proxy.index');
+        return $this->show();
     }
 
     private function updateMetarefreshConfigWithEntities($request, $filePath, $entities)
@@ -268,28 +273,34 @@ class ProxyController extends Controller
         file_put_contents($filePath, $configString);
     }
 
-    private function insertOidcToDatabase(Request $request, EntityDTO $entity)
+    private function insertOidcToDatabase(Request $request, $entities)
     {
         try {
-            OidcClient::updateOrCreate(
-                ['id' => $entity->getEntityId()], // Key to check if the record exists
-                [
-                    'secret' => $entity->getClientSecret(),
-                    'name' => $entity->getName(),
-                    'description' => $entity->getDescription(),
-                    'auth_source' => 'default-sp',
-                    'redirect_uri' => json_encode([$entity->getResourceLocation()]),
-                    'scopes' => $entity->getScopes(),
-                    'is_enabled' => 1,
-                    'is_confidential' => 1,
-                    'owner' => NULL,
-                    'post_logout_redirect_uri' => NULL,
-                    'backchannel_logout_uri' => NULL,
-                ]
-            );
+            DB::transaction(function () use ($entities) {
+                foreach ($entities as $entity) {
+                    OidcClient::updateOrCreate(
+                        ['id' => $entity->getEntityId()], // Key to check if the record exists
+                        [
+                            'secret' => $entity->getClientSecret(),
+                            'name' => $entity->getName(),
+                            'description' => $entity->getDescription(),
+                            'auth_source' => 'default-sp',
+                            'redirect_uri' => json_encode([$entity->getResourceLocation()]),
+                            'scopes' => $entity->getScopes(),
+                            'is_enabled' => 1,
+                            'is_confidential' => 1,
+                            'owner' => null,
+                            'post_logout_redirect_uri' => null,
+                            'backchannel_logout_uri' => null,
+                        ]
+                    );
+                }
+            });
+            $this->activeTab = 'rules';
         } catch (\Exception $e) {
-            Log::error('DB failure: ' . $e->getMessage());
-            $request->session()->flash('error', 'DB failure: ' . $e->getMessage());
+            $this->activeTab = 'oidc';
+            Log::error('DB transaction failure: ' . $e->getMessage());
+            $request->session()->flash('error', 'DB transaction failure: ' . $e->getMessage());
         }
     }
 
