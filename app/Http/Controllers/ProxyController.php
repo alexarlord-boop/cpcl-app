@@ -168,7 +168,6 @@ class ProxyController extends Controller
         try {
             $entities = unserialize(json_decode($request->input('oidcEntities')));
             $this->insertOidcToDatabase($request, $entities);
-            $request->session()->flash('success', 'Oidc Registry is updated!');
         } catch (Exception $e) {
             $request->session()->flash('error', $e->getMessage());
             $this->activeTab = 'oidc';
@@ -296,6 +295,7 @@ class ProxyController extends Controller
                 }
             });
             $this->activeTab = 'rules';
+            $request->session()->flash('success', 'Oidc Registry is updated!');
         } catch (\Exception $e) {
             $this->activeTab = 'oidc';
             Log::error('DB transaction failure: ' . $e->getMessage());
