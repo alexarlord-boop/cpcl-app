@@ -8,19 +8,18 @@
         <div class="container row mt-2 d-flex justify-content-between align-items-center">
 
             <!-- ... Get config from uploads ... -->
-            <form action="/" method="post" enctype="multipart/form-data">
+            <form action="/"  id="configForm" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group input-group mb-3">
-                    <select class="custom-select " name="uploadedFile" required>
+                    <select id="uploadedFile" class="custom-select" name="uploadedFile" required>
+                        <option selected value="close">clear selection</option>
                         <?php
-
                         // List files in the uploads/ directory
                         $uploadDir = 'uploads/';
                         $files = scandir($uploadDir);
 
                         foreach ($files as $file) {
                             if ($file != "." && $file != "..") {
-
                                 if (session('uploaded_file') === $file) {
                                     echo "<option selected value=\"$uploadDir$file\">$file</option>";
                                 } else {
@@ -30,15 +29,29 @@
                         }
                         ?>
                     </select>
-                    <div class="input-group-append">
-                        <button type="submit" class="input-group-append btn btn-outline-primary">Get from server
-                        </button>
-                    </div>
+{{--                    <div class="input-group-append">--}}
+{{--                        <!-- Removed button and replaced with empty div -->--}}
+{{--                        <div class="input-group-append btn btn-outline-primary"></div>--}}
+{{--                    </div>--}}
 
-                <x-file-actions/>
-
+                    <x-file-actions/>
                 </div>
             </form>
+
+            <script>
+                // Add event listener to the select element
+                document.getElementById('uploadedFile').addEventListener('change', function () {
+                    // Submit the form when a selection is made
+                    var selectedOption = this.value;
+                    if (selectedOption === 'close') {
+                        // Redirect to clear cache route
+                        window.location.href = "{{ route('clear.cache') }}";
+                    } else {
+                        // Submit the form for other options
+                        document.getElementById('configForm').submit();
+                    }
+                });
+            </script>
 
             <!-- ... Upload config from pc ... -->
             <form action="/" method="post" enctype="multipart/form-data">
