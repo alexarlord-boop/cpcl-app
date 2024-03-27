@@ -31,7 +31,8 @@ class ProxyController extends Controller
 
     public function index()
     {
-//        session_start();
+        session()->forget('success');
+        session()->forget('error');
         return $this->show();
     }
 
@@ -74,11 +75,11 @@ class ProxyController extends Controller
                 $rules = Cache::get('rules');
 
                 Cache::put('rules', $rules, Constants::ENTITY_CACHE_LIVE);
-                return view('proxy.index', compact('entities', 'rules', 'fileName'));
+//                return view('proxy.index', compact('entities', 'rules', 'fileName'));
             }
         }
 
-        $this->show();
+        return $this->show();
     }
 
     public function show(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
@@ -87,6 +88,7 @@ class ProxyController extends Controller
         $rules = Cache::get('rules');
         $fileName = session('uploaded_file');
         $activeTab = $this->activeTab;
+
         return view('proxy.index', compact('entities', 'rules', 'fileName', 'activeTab'));
     }
 
@@ -100,7 +102,7 @@ class ProxyController extends Controller
         Cache::put('rules', $rules, Constants::ENTITY_CACHE_LIVE);
     }
 
-    public function processSamlEntity(Request $request): \Illuminate\Http\RedirectResponse
+    public function processSamlEntity(Request $request)
     {
 
         try {
@@ -128,7 +130,7 @@ class ProxyController extends Controller
         }
 
         // Redirect back with the notification
-        return redirect()->route('proxy.index');
+        return $this->show();
     }
 
     public function processSamlEntities(Request $request)
@@ -151,7 +153,7 @@ class ProxyController extends Controller
         return $this->show();
     }
 
-    public function processOidcEntity(Request $request): \Illuminate\Http\RedirectResponse
+    public function processOidcEntity(Request $request)
     {
         try {
             $entity = unserialize(json_decode($request->input('oidcEntity')));
@@ -160,7 +162,7 @@ class ProxyController extends Controller
             $request->session()->flash('error', $e->getMessage());
         }
 
-        return redirect()->route('proxy.index');
+        return $this->show();
     }
 
     public function processOidcEntities(Request $request)
@@ -309,6 +311,8 @@ class ProxyController extends Controller
         Cache::forget('rules');
         session()->forget('uploaded_file');
         session()->forget('pathFileToParse');
+//        session()->forget('success');
+        session()->forget('error');
 
         return $this->show();
     }
@@ -323,7 +327,7 @@ class ProxyController extends Controller
             return view("proxy.all", compact('oidcClients', 'idpEntries', 'spEntries'));
         } catch (Exception $e) {
             $request->session()->flash('error', 'Error: ' . $e->getMessage());
-            return redirect()->route('proxy.index');
+            return $this->show();
         }
     }
 
