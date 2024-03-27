@@ -358,4 +358,27 @@ class ProxyController extends Controller
 
         return redirect()->route("check.all");
     }
+
+    public function deleteFile(Request $request, $filename)
+    {
+        try {
+            $filePath = public_path('uploads/' . $filename); // Path to the file
+
+            // Check if the file exists
+            if (file_exists($filePath)) {
+                // Delete the file
+                unlink($filePath);
+                $request->session()->flash('success', 'File deleted successfully');
+            } else {
+                 $request->session()->flash('error', 'File not found');
+            }
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Failed to delete file: ' . $e->getMessage());
+            // Return error response
+            $request->session()->flash('error', 'Failed to delete file: ' . $e->getMessage());
+        }
+        $this->clearCache();
+        return $this->show();
+    }
 }
