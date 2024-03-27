@@ -53,19 +53,40 @@
                 });
             </script>
 
+{{--            <!-- ... Upload config from pc ... -->--}}
+{{--            <form action="/" method="post" enctype="multipart/form-data">--}}
+{{--                @csrf--}}
+{{--                <div class="input-group input-group mb-3">--}}
+{{--                    <div class="input-group-prepend">--}}
+{{--                        <button type="submit" class="input-group-append btn btn-outline-primary">⬆upload</button>--}}
+{{--                    </div>--}}
+{{--                    <div class="custom-file">--}}
+{{--                        <input type="file" class="custom-file-input" id="file" name="file" accept=".yaml" required>--}}
+{{--                        <label class="custom-file-label" for="file">Choose file</label>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </form>--}}
             <!-- ... Upload config from pc ... -->
-            <form action="/" method="post" enctype="multipart/form-data">
+            <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group input-group mb-3">
-                    <div class="input-group-prepend">
-                        <button type="submit" class="input-group-append btn btn-outline-primary">⬆upload</button>
-                    </div>
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" id="file" name="file" accept=".yaml" required>
                         <label class="custom-file-label" for="file">Choose file</label>
                     </div>
                 </div>
             </form>
+
+            <script>
+                // Get reference to the file input element
+                var fileInput = document.getElementById('file');
+
+                // Listen for change event on file input
+                fileInput.addEventListener('change', function() {
+                    // Submit the form when a file is selected
+                    document.getElementById('uploadForm').submit();
+                });
+            </script>
 
         </div>
 
