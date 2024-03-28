@@ -27,40 +27,30 @@
                         <table class="table m-0">
                             <tbody>
                             <tr>
-                                {{--                                <th scope="row" style="width: 25%;">Name:</th>--}}
-                                {{--                                <td style="width: 25%;">{{ $entity->getName() }}</td>--}}
-                                {{--                                <th scope="row" style="width: 25%;">Section:</th>--}}
-                                {{--                                <td style="width: 25%;">{{ $entity->getSection() }}</td>--}}
-                            </tr>
-                            <tr>
-                                <th scope="row" style="width: 20%;">Description:</th>
+                                <th scope="row">Description:</th>
                                 <td class="border-left">{{ $entity->getDescription() }}</td>
-                                {{--                                <th scope="row">Protocol:</th>--}}
-                                {{--                                <td>{{ $entity->getProtocol() }}</td>--}}
                             </tr>
                             <tr>
                                 <th scope="row">Redirect uri:</th>
                                 <td class="border-left">
                                     <a href="{{ $entity->getResourceLocation() }}">{{ $entity->getResourceLocation() }}</a>
                                 </td>
-                                {{--                                <th scope="row">Type</th>--}}
-                                {{--                                <td>{{ $entity->getType() }}</td>--}}
                             </tr>
                             <tr>
                                 <th scope="row">Entity ID:</th>
                                 <td class="border-left">{{ $entity->getEntityId() }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Client Secret:</th>
-                                <td class="border-left" colspan="3">{{ $entity->getClientSecret() }}</td>
+                                <th scope="row">Secret:</th>
+                                <td class="border-left">{{ $entity->getClientSecret() }}</td>
                             </tr>
-{{--                            <tr>--}}
-{{--                                <th scope="row">Dynamic Registration:</th>--}}
-{{--                                <td class="border-left">{{ $entity->getDynamicRegistration() ? 'Yes' : 'No' }}</td>--}}
-{{--                            </tr>--}}
-
+                            <tr>
+                                <th scope="row">Scopes:</th>
+                                <td class="border-left">{{ implode(', ', json_decode($entity->getScopes())) }}</td>
+                            </tr>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>
