@@ -311,7 +311,7 @@ class ProxyController extends Controller
         Cache::forget('rules');
         session()->forget('uploaded_file');
         session()->forget('pathFileToParse');
-//        session()->forget('success');
+        session()->forget('success');
         session()->forget('error');
 
         return $this->show();
@@ -372,7 +372,8 @@ class ProxyController extends Controller
             if (file_exists($filePath)) {
                 // Delete the file
                 unlink($filePath);
-                $request->session()->flash('success', 'File deleted successfully');
+                Log::info('File'. $filePath .' deleted successfully');
+//                $request->session()->flash('success', 'File deleted successfully');
             } else {
                  $request->session()->flash('error', 'File not found');
             }
@@ -384,5 +385,26 @@ class ProxyController extends Controller
         }
         $this->clearCache();
         return $this->show();
+    }
+
+    public function downloadFile(Request $request, $filename)
+    {
+        try {
+            $filePath = public_path('uploads/' . $filename); // Path to the file
+
+            // Check if the file exists
+            if (file_exists($filePath)) {
+                // Set headers for file download
+                return response()->download($filePath, $filename);
+            } else {
+                $request->session()->flash('error', 'File not found');
+            }
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Failed to download file: ' . $e->getMessage());
+            // Return error response
+            $request->session()->flash('error', 'Failed to download file: ' . $e->getMessage());
+        }
+        return redirect()->back();
     }
 }
