@@ -38,6 +38,8 @@ class ProxyController extends Controller
 
     public function parseAndShow(Request $request)
     {
+        session()->forget('success');
+        session()->forget('error');
 
         if ($request->isMethod('post')) {
             $file = $request->file('file');
